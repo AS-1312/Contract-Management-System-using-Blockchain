@@ -88,6 +88,15 @@ contract ContractController is IContractInit, ContractStages, Initializable {
         _nextStage();
         emit contractInitialized(address(this));
     }
+    function approveContract() external onlyParty {
+        hasPartyApproved[msg.sender] = true;
+        emit partyApproved(msg.sender, address(this));  
+    } 
+
+    function rejectContract() external onlyParty {
+        _goToRejected();
+        emit contractRejectedByParty(msg.sender, address(this));
+    }
 
     function finalApproval() external onlyInitiator {
         _atStage(ContractManagementStages.FinalApprovalPending);
