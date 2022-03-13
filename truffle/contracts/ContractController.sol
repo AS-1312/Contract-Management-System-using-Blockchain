@@ -89,11 +89,13 @@ contract ContractController is IContractInit, ContractStages, Initializable {
         emit contractInitialized(address(this));
     }
     function approveContract() external onlyParty {
+        _atStage(ContractManagementStages.PartyApprovalPending);
         hasPartyApproved[msg.sender] = true;
         emit partyApproved(msg.sender, address(this));  
     } 
 
     function rejectContract() external onlyParty {
+        _atStage(ContractManagementStages.PartyApprovalPending);
         _goToRejected();
         emit contractRejectedByParty(msg.sender, address(this));
     }
@@ -108,4 +110,9 @@ contract ContractController is IContractInit, ContractStages, Initializable {
         _nextStage();
         emit finalApprovalCompleted(address(this));
     } 
+
+    function renewContract(uint extendedTime) external onlyInitiator {
+        _atStage(ContractManagementStages.Expired);
+        contractData.expiryTime += extendedTime;
+    }
 }
