@@ -1,14 +1,19 @@
 const DAI  = artifacts.require("DAI");
 const ContractFactory = artifacts.require("ContractFactory");
 const ContractController = require("../build/contracts/ContractController.json");
+const ContractController1 = artifacts.require("ContractController");
+const ContractStages = artifacts.require("ContractStages")
+
 
 contract("CMSB Contracts Test", (accounts) => {
-    let contractFactory, baseContract, dai;
+    let contractFactory, baseContract, dai, contractMain, contractStages;
 
     before(async () => {
         dai = await DAI.deployed();
         contractFactory = await ContractFactory.deployed();
         baseContract = await contractFactory.baseContract();
+        contractController = await ContractController1.deployed();
+        contractStages = await ContractStages.deployed()
 
         for (let i=0; i<5; ++i) {
             await dai.mint(accounts[i], web3.utils.toWei("100"));
@@ -31,7 +36,7 @@ contract("CMSB Contracts Test", (accounts) => {
         it("initiating party can create a new contract", async () => {
             let contractData = {
                 isPayable: false,
-                expiryTime: 2000000,
+                expiryTime: 0,
                 fundDistribution: [0],
                 initiatingParty: accounts[1],
                 parties: [accounts[2], accounts[3]],
@@ -80,5 +85,40 @@ contract("CMSB Contracts Test", (accounts) => {
             const myContracts3 = await contractFactory.getMyContracts({from: accounts[3]});
             assert.equal(myContracts3.length, 1);
         });
+
+
+        it("To Check the current Stage", async () => {
+            await contractStages.currentStage = ContractManagementStages.PartyApprovalPending;
+            let Cstage = await contractStages.getContractStage()
+            assert.equal(contractStages.currentStage, Cstage)
+        });
+
+
+        // it("Check if all parties approved", async () => {
+        //     let approved1 = await contractController.allPartiesApproved()
+        //     assert.equal(approved1, true)
+        // });
+
+        // it("To check if Payment is Executed", async () => {
+
+        // });
+
+        // it("To check if Contract is Final Approved", async () => {
+        //     let allPartiesApproved() = true
+        //     let isFinalApprovalCompleted = true
+        //     const Fapproval = contractController.finalApproval()
+        //     assert.equal(Fapproval, _nextStage())
+        // });
+
+        it("To check if Contract is Renewed", async () => {
+            await contractMain.methods.checkExpired.send({from :accounts[1]});
+            await contractMain.methods.renewContract(1000).send({from :accounts[1]});
+            const completeContractData = await contractMain.methods.viewContractData().call({from: accounts[1]});
+            assert.equal(completeContractData.expiryTime, 1000)
+        });
+
+       
+
+
     });
 });

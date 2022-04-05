@@ -15,15 +15,15 @@
     "absolutePath": "project:/contracts/interfaces/IContractInit.sol",
     "exportedSymbols": {
       "IContractInit": [
-        2102
+        2118
       ]
     },
-    "id": 2103,
+    "id": 2119,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 2074,
+        "id": 2090,
         "literals": [
           "solidity",
           "^",
@@ -39,9 +39,9 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "fullyImplemented": true,
-        "id": 2102,
+        "id": 2118,
         "linearizedBaseContracts": [
-          2102
+          2118
         ],
         "name": "IContractInit",
         "nameLocation": "70:13:12",
@@ -49,16 +49,16 @@
         "nodes": [
           {
             "canonicalName": "IContractInit.BaseContractData",
-            "id": 2084,
+            "id": 2100,
             "members": [
               {
                 "constant": false,
-                "id": 2076,
+                "id": 2092,
                 "mutability": "mutable",
                 "name": "id",
                 "nameLocation": "131:2:12",
                 "nodeType": "VariableDeclaration",
-                "scope": 2084,
+                "scope": 2100,
                 "src": "126:7:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -67,7 +67,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 2075,
+                  "id": 2091,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
                   "src": "126:4:12",
@@ -80,12 +80,12 @@
               },
               {
                 "constant": false,
-                "id": 2078,
+                "id": 2094,
                 "mutability": "mutable",
                 "name": "contractAddress",
                 "nameLocation": "152:15:12",
                 "nodeType": "VariableDeclaration",
-                "scope": 2084,
+                "scope": 2100,
                 "src": "144:23:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -94,7 +94,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 2077,
+                  "id": 2093,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "144:7:12",
@@ -108,12 +108,12 @@
               },
               {
                 "constant": false,
-                "id": 2080,
+                "id": 2096,
                 "mutability": "mutable",
                 "name": "initiatingParty",
                 "nameLocation": "186:15:12",
                 "nodeType": "VariableDeclaration",
-                "scope": 2084,
+                "scope": 2100,
                 "src": "178:23:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -122,7 +122,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 2079,
+                  "id": 2095,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "178:7:12",
@@ -136,12 +136,12 @@
               },
               {
                 "constant": false,
-                "id": 2083,
+                "id": 2099,
                 "mutability": "mutable",
                 "name": "parties",
                 "nameLocation": "222:7:12",
                 "nodeType": "VariableDeclaration",
-                "scope": 2084,
+                "scope": 2100,
                 "src": "212:17:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -151,7 +151,7 @@
                 },
                 "typeName": {
                   "baseType": {
-                    "id": 2081,
+                    "id": 2097,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "212:7:12",
@@ -161,7 +161,7 @@
                       "typeString": "address"
                     }
                   },
-                  "id": 2082,
+                  "id": 2098,
                   "nodeType": "ArrayTypeName",
                   "src": "212:9:12",
                   "typeDescriptions": {
@@ -175,22 +175,22 @@
             "name": "BaseContractData",
             "nameLocation": "98:16:12",
             "nodeType": "StructDefinition",
-            "scope": 2102,
+            "scope": 2118,
             "src": "91:146:12",
             "visibility": "public"
           },
           {
             "canonicalName": "IContractInit.CompleteContractData",
-            "id": 2101,
+            "id": 2117,
             "members": [
               {
                 "constant": false,
-                "id": 2086,
+                "id": 2102,
                 "mutability": "mutable",
                 "name": "isPayable",
                 "nameLocation": "289:9:12",
                 "nodeType": "VariableDeclaration",
-                "scope": 2101,
+                "scope": 2117,
                 "src": "284:14:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -199,7 +199,7 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 2085,
+                  "id": 2101,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
                   "src": "284:4:12",
@@ -212,12 +212,12 @@
               },
               {
                 "constant": false,
-                "id": 2088,
+                "id": 2104,
                 "mutability": "mutable",
                 "name": "expiryTime",
                 "nameLocation": "314:10:12",
                 "nodeType": "VariableDeclaration",
-                "scope": 2101,
+                "scope": 2117,
                 "src": "309:15:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -226,7 +226,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 2087,
+                  "id": 2103,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
                   "src": "309:4:12",
@@ -239,12 +239,12 @@
               },
               {
                 "constant": false,
-                "id": 2091,
+                "id": 2107,
                 "mutability": "mutable",
                 "name": "fundDistribution",
                 "nameLocation": "342:16:12",
                 "nodeType": "VariableDeclaration",
-                "scope": 2101,
+                "scope": 2117,
                 "src": "335:23:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -254,7 +254,7 @@
                 },
                 "typeName": {
                   "baseType": {
-                    "id": 2089,
+                    "id": 2105,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "335:4:12",
@@ -263,7 +263,7 @@
                       "typeString": "uint256"
                     }
                   },
-                  "id": 2090,
+                  "id": 2106,
                   "nodeType": "ArrayTypeName",
                   "src": "335:6:12",
                   "typeDescriptions": {
@@ -275,12 +275,12 @@
               },
               {
                 "constant": false,
-                "id": 2093,
+                "id": 2109,
                 "mutability": "mutable",
                 "name": "initiatingParty",
                 "nameLocation": "377:15:12",
                 "nodeType": "VariableDeclaration",
-                "scope": 2101,
+                "scope": 2117,
                 "src": "369:23:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -289,7 +289,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 2092,
+                  "id": 2108,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "369:7:12",
@@ -303,12 +303,12 @@
               },
               {
                 "constant": false,
-                "id": 2096,
+                "id": 2112,
                 "mutability": "mutable",
                 "name": "parties",
                 "nameLocation": "413:7:12",
                 "nodeType": "VariableDeclaration",
-                "scope": 2101,
+                "scope": 2117,
                 "src": "403:17:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -318,7 +318,7 @@
                 },
                 "typeName": {
                   "baseType": {
-                    "id": 2094,
+                    "id": 2110,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "403:7:12",
@@ -328,7 +328,7 @@
                       "typeString": "address"
                     }
                   },
-                  "id": 2095,
+                  "id": 2111,
                   "nodeType": "ArrayTypeName",
                   "src": "403:9:12",
                   "typeDescriptions": {
@@ -340,12 +340,12 @@
               },
               {
                 "constant": false,
-                "id": 2098,
+                "id": 2114,
                 "mutability": "mutable",
                 "name": "contractName",
                 "nameLocation": "438:12:12",
                 "nodeType": "VariableDeclaration",
-                "scope": 2101,
+                "scope": 2117,
                 "src": "431:19:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -354,7 +354,7 @@
                   "typeString": "string"
                 },
                 "typeName": {
-                  "id": 2097,
+                  "id": 2113,
                   "name": "string",
                   "nodeType": "ElementaryTypeName",
                   "src": "431:6:12",
@@ -367,12 +367,12 @@
               },
               {
                 "constant": false,
-                "id": 2100,
+                "id": 2116,
                 "mutability": "mutable",
                 "name": "document",
                 "nameLocation": "468:8:12",
                 "nodeType": "VariableDeclaration",
-                "scope": 2101,
+                "scope": 2117,
                 "src": "461:15:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -381,7 +381,7 @@
                   "typeString": "string"
                 },
                 "typeName": {
-                  "id": 2099,
+                  "id": 2115,
                   "name": "string",
                   "nodeType": "ElementaryTypeName",
                   "src": "461:6:12",
@@ -396,12 +396,12 @@
             "name": "CompleteContractData",
             "nameLocation": "252:20:12",
             "nodeType": "StructDefinition",
-            "scope": 2102,
+            "scope": 2118,
             "src": "245:239:12",
             "visibility": "public"
           }
         ],
-        "scope": 2103,
+        "scope": 2119,
         "src": "60:427:12"
       }
     ],
@@ -411,15 +411,15 @@
     "absolutePath": "project:/contracts/interfaces/IContractInit.sol",
     "exportedSymbols": {
       "IContractInit": [
-        2102
+        2118
       ]
     },
-    "id": 2103,
+    "id": 2119,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 2074,
+        "id": 2090,
         "literals": [
           "solidity",
           "^",
@@ -435,9 +435,9 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "fullyImplemented": true,
-        "id": 2102,
+        "id": 2118,
         "linearizedBaseContracts": [
-          2102
+          2118
         ],
         "name": "IContractInit",
         "nameLocation": "70:13:12",
@@ -445,16 +445,16 @@
         "nodes": [
           {
             "canonicalName": "IContractInit.BaseContractData",
-            "id": 2084,
+            "id": 2100,
             "members": [
               {
                 "constant": false,
-                "id": 2076,
+                "id": 2092,
                 "mutability": "mutable",
                 "name": "id",
                 "nameLocation": "131:2:12",
                 "nodeType": "VariableDeclaration",
-                "scope": 2084,
+                "scope": 2100,
                 "src": "126:7:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -463,7 +463,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 2075,
+                  "id": 2091,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
                   "src": "126:4:12",
@@ -476,12 +476,12 @@
               },
               {
                 "constant": false,
-                "id": 2078,
+                "id": 2094,
                 "mutability": "mutable",
                 "name": "contractAddress",
                 "nameLocation": "152:15:12",
                 "nodeType": "VariableDeclaration",
-                "scope": 2084,
+                "scope": 2100,
                 "src": "144:23:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -490,7 +490,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 2077,
+                  "id": 2093,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "144:7:12",
@@ -504,12 +504,12 @@
               },
               {
                 "constant": false,
-                "id": 2080,
+                "id": 2096,
                 "mutability": "mutable",
                 "name": "initiatingParty",
                 "nameLocation": "186:15:12",
                 "nodeType": "VariableDeclaration",
-                "scope": 2084,
+                "scope": 2100,
                 "src": "178:23:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -518,7 +518,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 2079,
+                  "id": 2095,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "178:7:12",
@@ -532,12 +532,12 @@
               },
               {
                 "constant": false,
-                "id": 2083,
+                "id": 2099,
                 "mutability": "mutable",
                 "name": "parties",
                 "nameLocation": "222:7:12",
                 "nodeType": "VariableDeclaration",
-                "scope": 2084,
+                "scope": 2100,
                 "src": "212:17:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -547,7 +547,7 @@
                 },
                 "typeName": {
                   "baseType": {
-                    "id": 2081,
+                    "id": 2097,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "212:7:12",
@@ -557,7 +557,7 @@
                       "typeString": "address"
                     }
                   },
-                  "id": 2082,
+                  "id": 2098,
                   "nodeType": "ArrayTypeName",
                   "src": "212:9:12",
                   "typeDescriptions": {
@@ -571,22 +571,22 @@
             "name": "BaseContractData",
             "nameLocation": "98:16:12",
             "nodeType": "StructDefinition",
-            "scope": 2102,
+            "scope": 2118,
             "src": "91:146:12",
             "visibility": "public"
           },
           {
             "canonicalName": "IContractInit.CompleteContractData",
-            "id": 2101,
+            "id": 2117,
             "members": [
               {
                 "constant": false,
-                "id": 2086,
+                "id": 2102,
                 "mutability": "mutable",
                 "name": "isPayable",
                 "nameLocation": "289:9:12",
                 "nodeType": "VariableDeclaration",
-                "scope": 2101,
+                "scope": 2117,
                 "src": "284:14:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -595,7 +595,7 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 2085,
+                  "id": 2101,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
                   "src": "284:4:12",
@@ -608,12 +608,12 @@
               },
               {
                 "constant": false,
-                "id": 2088,
+                "id": 2104,
                 "mutability": "mutable",
                 "name": "expiryTime",
                 "nameLocation": "314:10:12",
                 "nodeType": "VariableDeclaration",
-                "scope": 2101,
+                "scope": 2117,
                 "src": "309:15:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -622,7 +622,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 2087,
+                  "id": 2103,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
                   "src": "309:4:12",
@@ -635,12 +635,12 @@
               },
               {
                 "constant": false,
-                "id": 2091,
+                "id": 2107,
                 "mutability": "mutable",
                 "name": "fundDistribution",
                 "nameLocation": "342:16:12",
                 "nodeType": "VariableDeclaration",
-                "scope": 2101,
+                "scope": 2117,
                 "src": "335:23:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -650,7 +650,7 @@
                 },
                 "typeName": {
                   "baseType": {
-                    "id": 2089,
+                    "id": 2105,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "335:4:12",
@@ -659,7 +659,7 @@
                       "typeString": "uint256"
                     }
                   },
-                  "id": 2090,
+                  "id": 2106,
                   "nodeType": "ArrayTypeName",
                   "src": "335:6:12",
                   "typeDescriptions": {
@@ -671,12 +671,12 @@
               },
               {
                 "constant": false,
-                "id": 2093,
+                "id": 2109,
                 "mutability": "mutable",
                 "name": "initiatingParty",
                 "nameLocation": "377:15:12",
                 "nodeType": "VariableDeclaration",
-                "scope": 2101,
+                "scope": 2117,
                 "src": "369:23:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -685,7 +685,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 2092,
+                  "id": 2108,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "369:7:12",
@@ -699,12 +699,12 @@
               },
               {
                 "constant": false,
-                "id": 2096,
+                "id": 2112,
                 "mutability": "mutable",
                 "name": "parties",
                 "nameLocation": "413:7:12",
                 "nodeType": "VariableDeclaration",
-                "scope": 2101,
+                "scope": 2117,
                 "src": "403:17:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -714,7 +714,7 @@
                 },
                 "typeName": {
                   "baseType": {
-                    "id": 2094,
+                    "id": 2110,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "403:7:12",
@@ -724,7 +724,7 @@
                       "typeString": "address"
                     }
                   },
-                  "id": 2095,
+                  "id": 2111,
                   "nodeType": "ArrayTypeName",
                   "src": "403:9:12",
                   "typeDescriptions": {
@@ -736,12 +736,12 @@
               },
               {
                 "constant": false,
-                "id": 2098,
+                "id": 2114,
                 "mutability": "mutable",
                 "name": "contractName",
                 "nameLocation": "438:12:12",
                 "nodeType": "VariableDeclaration",
-                "scope": 2101,
+                "scope": 2117,
                 "src": "431:19:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -750,7 +750,7 @@
                   "typeString": "string"
                 },
                 "typeName": {
-                  "id": 2097,
+                  "id": 2113,
                   "name": "string",
                   "nodeType": "ElementaryTypeName",
                   "src": "431:6:12",
@@ -763,12 +763,12 @@
               },
               {
                 "constant": false,
-                "id": 2100,
+                "id": 2116,
                 "mutability": "mutable",
                 "name": "document",
                 "nameLocation": "468:8:12",
                 "nodeType": "VariableDeclaration",
-                "scope": 2101,
+                "scope": 2117,
                 "src": "461:15:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -777,7 +777,7 @@
                   "typeString": "string"
                 },
                 "typeName": {
-                  "id": 2099,
+                  "id": 2115,
                   "name": "string",
                   "nodeType": "ElementaryTypeName",
                   "src": "461:6:12",
@@ -792,12 +792,12 @@
             "name": "CompleteContractData",
             "nameLocation": "252:20:12",
             "nodeType": "StructDefinition",
-            "scope": 2102,
+            "scope": 2118,
             "src": "245:239:12",
             "visibility": "public"
           }
         ],
-        "scope": 2103,
+        "scope": 2119,
         "src": "60:427:12"
       }
     ],
@@ -809,7 +809,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.6",
-  "updatedAt": "2022-03-13T13:54:47.858Z",
+  "updatedAt": "2022-04-05T16:13:31.022Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},
