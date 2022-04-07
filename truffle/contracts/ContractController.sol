@@ -117,7 +117,7 @@ contract ContractController is IContractInit, ContractStages, Initializable {
     }
 
     function checkExpired() external {
-        if(block.timestamp >= contractData.expiryTime){
+        if (block.timestamp >= contractData.expiryTime) {
             _jumpToStage(ContractManagementStages.Expired);
         }
     }

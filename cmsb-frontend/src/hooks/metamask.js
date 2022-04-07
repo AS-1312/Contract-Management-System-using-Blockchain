@@ -28,7 +28,6 @@ export const MetaMaskProvider = ({ children }) => {
     }, [handleIsActive])
 
     const connect = async () => {
-        console.log('Connecting to MetaMask...');
         setShouldDisable(true);
         try {
             await activate(injected).then(() => {
@@ -40,7 +39,6 @@ export const MetaMaskProvider = ({ children }) => {
     }
 
     const disconnect = async () => {
-        console.log('Disconnecting wallet from App...');
         try {
             await deactivate();
         } catch(error) {

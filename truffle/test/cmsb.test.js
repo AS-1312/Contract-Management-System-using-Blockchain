@@ -88,7 +88,8 @@ contract("CMSB Contracts Test", (accounts) => {
 
 
         it("To Check the current Stage", async () => {
-            await contractStages.currentStage = ContractManagementStages.PartyApprovalPending;
+            await contractStages.currentStage;
+            // ContractManagementStages.PartyApprovalPending;
             let Cstage = await contractStages.getContractStage()
             assert.equal(contractStages.currentStage, Cstage)
         });
