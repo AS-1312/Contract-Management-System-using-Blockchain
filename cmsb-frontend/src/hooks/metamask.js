@@ -25,7 +25,7 @@ export const MetaMaskProvider = ({ children }) => {
 
     useEffect(() => {
         handleIsActive();
-    }, [handleIsActive])
+    }, [handleIsActive]);
 
     const connect = async () => {
         setShouldDisable(true);
@@ -35,8 +35,9 @@ export const MetaMaskProvider = ({ children }) => {
             })
         } catch(error) {
             console.log('Error on connecting: ', error);
+            return false;
         }
-    }
+    };
 
     const disconnect = async () => {
         try {
@@ -44,7 +45,7 @@ export const MetaMaskProvider = ({ children }) => {
         } catch(error) {
             console.log('Error on disconnnect: ', error);
         }
-    }
+    };
 
     const values = useMemo(
         () => ({
@@ -57,7 +58,7 @@ export const MetaMaskProvider = ({ children }) => {
             library
         }),
         [isActive, isLoading, shouldDisable, account]
-    )
+    );
 
     return <MetaMaskContext.Provider value={values}>{children}</MetaMaskContext.Provider>;
 }
