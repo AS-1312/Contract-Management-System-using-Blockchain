@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { injected } from '../components/wallet/connectors';
 import { useWeb3React } from '@web3-react/core';
 

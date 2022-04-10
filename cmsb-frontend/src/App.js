@@ -1,16 +1,19 @@
-import { ethers, Contract, providers } from 'ethers';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
+import { HalfCircleSpinner } from 'react-epic-spinners';
 
 import Home from './components/Home';
 import Navigation from './components/Navigation';
 import Initiate from './components/Initiate';
 import Contracts from './components/Contracts';
+import Contract from './components/Contract';
 
-import DAI from './abis/DAI.json';
-import ContractFactory from './abis/ContractFactory.json';
-
-import { HalfCircleSpinner } from 'react-epic-spinners';
+import {
+  loadProviderAndBlockchainData,
+  initiateNewContract,
+  getMyContracts,
+  getContractDetails
+} from './components/utils/methods';
 import useMetaMask from './hooks/metamask';
 
 function App() {
@@ -26,21 +29,13 @@ function App() {
   } = useMetaMask();
 
   const [loading, setLoading] = useState(false);
-  const [provider, setProvider] = useState(null);
-  const [signer, setSigner] = useState(null);
-  const [daiContract, setDaiContract] = useState(null);
-  const [factoryContract, setFactoryContract] = useState(null);
 
   const connectWallet = async () => {
     await connect();
     if (isActive || typeof window.ethereum !== 'undefined') {
       if (library !== undefined) {
         if (await library.eth.net.getId() === 80001) {
-          const provider = new providers.Web3Provider(library.eth.net.currentProvider);
-          const signer = provider.getSigner();
-          setProvider(provider);
-          setSigner(signer);
-          await loadBlockchainData();
+          await loadProviderAndBlockchainData();
         } else {
           window.alert("Please change the network to Mumbai Test Network");
         }
@@ -50,27 +45,9 @@ function App() {
     }
   };
 
-  const loadBlockchainData = async () => {
-    const daiContract = new Contract("0x0CC77CC2f9a4ae5023cEa08c93a12C2603af562e", DAI.abi, provider);
-    setDaiContract(daiContract);
-    const factoryContract = new Contract("0xD608276690AAC72E18B733579E4Cb880E47DF61e", ContractFactory.abi, provider);
-    setFactoryContract(factoryContract);
-  }
-
-  const initiateNewContract = async (contractData) => {
-    const tx = await factoryContract.initiateContract(contractData);
-    const receipt = await tx.wait();
-    console.log(receipt);
-  }
-
-  const getMyContracts = async () => {
-    const contracts = await factoryContract.getMyContracts();
-    return contracts;
-  }
-
   const handleChange = async (event) => {
     console.log(event)
-    connectWallet();
+    await connectWallet();
   }
 
   useEffect(() => {
@@ -78,9 +55,7 @@ function App() {
     window.addEventListener('Web3ReactUpdate', handleChange);
     
     async function fetchData() {
-      if (isActive) {
-        connectWallet();
-      }
+      await connectWallet();
     }
 
     fetchData();
@@ -89,11 +64,11 @@ function App() {
     return () => {
       window.removeEventListener('Web3ReactUpdate', handleChange);
     };
-  }, [isActive]);
+  }, []);
 
   if (loading || isLoading) {
     return(
-      <div  class="flex flex-row min-h-screen justify-center items-center">
+      <div class="flex flex-row min-h-screen justify-center items-center">
         <HalfCircleSpinner size="100" color="blue" />
       </div>
     );
@@ -119,20 +94,28 @@ function App() {
               connectWallet={connectWallet}
               disconnectWallet={disconnect}
             />
-              <Switch>
-              <Route exact path="/">
-                <Home />
-              </Route>
-              <Route exact path="/initiate">
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route exact path="/initiation">
                 <Initiate 
                   account={account}
+                  setLoading={setLoading}
                   initiateNewContract={initiateNewContract}
                 />
               </Route>
               <Route exact path="/contracts">
                 <Contracts 
                   account={account}
+                  setLoading={setLoading}
                   getMyContracts={getMyContracts}
+                />
+              </Route>
+              <Route exact path="/contract/:id">
+                <Contract 
+                  account={account}
+                  setLoading={setLoading}
+                  getMyContracts={getMyContracts}
+                  getContractDetails={getContractDetails}
                 />
               </Route>
             </Switch>

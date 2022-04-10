@@ -1,20 +1,18 @@
-import React, { useEffect } from 'react';
-// import { Navbar, Nav, Container, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import React from 'react';
 
-export default function Navigation(props) {
+export default function Navigation (props) {
 
     return (
         <header>
-            <nav className='flex items-center justify-between p-6 container mx-auto'>
+            <nav className='flex items-center justify-between p-2 container mx-auto bg-slate-100'>
             <div class="text-lg text-gray-600 hidden lg:flex">
-                <a href="/" class="block mt-4 lg:inline-block text-teal-600 lg:mt-0 mr-10">
+                <a href="/" class="block mt-4 lg:inline-block text-cyan-800 font-bold lg:mt-0 mr-10">
                     Home
                 </a>
-                <a href="/initiate" class="block mt-4 lg:inline-block hover:text-gray-700 lg:mt-0 mr-10">
+                <a href="/initiation" class="block mt-4 lg:inline-block hover:text-gray-700 lg:mt-0 mr-10">
                     Initiate New Contract
                 </a>
-                <a href="contracts" class="block mt-4 lg:inline-block hover:text-gray-700 lg:mt-0 mr-10">
+                <a href="/contracts" class="block mt-4 lg:inline-block hover:text-gray-700 lg:mt-0 mr-10">
                     View Your Contracts
                 </a>
             </div>
@@ -43,4 +41,4 @@ export default function Navigation(props) {
             </nav>
         </header>
     );
-}
+};

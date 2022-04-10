@@ -1,24 +1,42 @@
 import React, { useState, useEffect } from 'react';
 
-export default function Contracts(props) {
+export default function Contracts (props) {
     const [myContracts, setMyContracts] = useState([]);
 
     useEffect(() => {
         async function fetchData() {
-            const contracts = await props.getMyContracts();
-            if (contracts) {
-                setMyContracts(contracts);
-            }
+            const contracts = await props.getMyContracts();  
+            setMyContracts(contracts);
         }
+        props.setLoading(true);
         fetchData();
-    }, [myContracts.length]);
-    
+        props.setLoading(false);
+        
+    }, [myContracts.length, props.account]);  
 
     return(
         <React.Fragment>
-            {myContracts.length === 0 &&
-                <h2 style={{textAlign: 'center'}}>You do not have any contracts to be displayed</h2>
+            <br/>
+            {
+                myContracts.length === 0 ?
+                <div class="flex flex-row justify-center items-center">
+                    <h2 class="text-xl font-bold">You do not have any contracts to be displayed</h2>
+                </div>
+                :
+                <div class="flex flex-row justify-center items-center">
+                    <h2 class="text-2xl font-bold text-sky-900">Your Contracts</h2>
+                </div>
+            }
+            <br/><br/>
+            {
+                myContracts.map((contract, i) => {
+                    return(
+                        <a href={`/contract/${contract}`}>
+                            <h1 class="text-xl text-blue-900">{contract}</h1>
+                        </a>
+                    );
+                })
             }
         </React.Fragment>
     );
-}
+};

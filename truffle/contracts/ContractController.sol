@@ -52,6 +52,10 @@ contract ContractController is IContractInit, ContractStages, Initializable {
         return approved;
     }
 
+    function hasCurrentPartyApproved() external view onlyParty returns (bool) {
+        return hasPartyApproved[msg.sender];
+    }
+
     function getContractStage() external view onlyParty returns (uint) {
         return uint(currentStage);
     }
@@ -88,6 +92,7 @@ contract ContractController is IContractInit, ContractStages, Initializable {
         _nextStage();
         emit contractInitialized(address(this));
     }
+
     function approveContract() external onlyParty {
         _atStage(ContractManagementStages.PartyApprovalPending);
         hasPartyApproved[msg.sender] = true;
