@@ -3,8 +3,8 @@ import DAI from '../../abis/DAI.json';
 import ContractFactory from '../../abis/ContractFactory.json';
 import ContractController from '../../abis/ContractController.json';
 
-const daiContractAddress = "0x08204434B07864Ada34D43AfF77A2551A17658b2";
-const factoryContractAddress = "0x917c2Ac0F30c62C1CB599D8AaB8B58f5C7242363";
+const daiContractAddress = "0x74488dBb8db5f46EeA045e8151c5f93c7584194d";
+const factoryContractAddress = "0x1a494A57C9C0e7cdcD7c81c7b85105BE0C82Aa27";
 
 let signer, provider, factoryContract, daiContract;
 
@@ -21,17 +21,22 @@ export const initiateNewContract = async (contractData) => {
         try {
             const tx = await daiContract.connect(signer).approve(factoryContract.address, ethers.utils.parseEther(contractData.fundDistribution.reduce((a, b) => a + b)));
             await tx.wait();
-            window.alert("Transaction successfull");
+            window.alert("Approval successful");
         } catch(error) {
-            window.alert("Transaction failed");
+            console.log(error)
+            window.alert("Approval failed");
+            return false;
         }
     }
     try {
         const tx = await factoryContract.connect(signer).initiateContract(contractData);
         await tx.wait();
-        window.alert("Transaction successfull");
+        window.alert("Transaction successful");
+        return true;
     } catch(error) {
+        console.log(error)
         window.alert("Transaction failed");
+        return false;
     }
 };
 

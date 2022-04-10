@@ -41,10 +41,10 @@ contract ContractController is IContractInit, ContractStages, Initializable {
         _;
     }
 
-    function allPartiesApproved() private view returns(bool) {
+    function haveAllPartiesApproved() public view onlyParty returns (bool) {
         bool approved = true ;
-        for(uint i=0;i<contractData.parties.length;i++){
-            if(hasPartyApproved[contractData.parties[i]]==false){
+        for (uint i=0;i<contractData.parties.length;i++) {
+            if (hasPartyApproved[contractData.parties[i]]==false) {
                 approved = false;
                 break;
             }            
@@ -60,7 +60,7 @@ contract ContractController is IContractInit, ContractStages, Initializable {
         return uint(currentStage);
     }
 
-    function viewContractData() external view returns (CompleteContractData memory) {
+    function viewContractData() external view onlyParty returns (CompleteContractData memory) {
         return contractData;
     }
 
@@ -89,7 +89,6 @@ contract ContractController is IContractInit, ContractStages, Initializable {
                 fundDistribution[_contractData.parties[i]] = _contractData.fundDistribution[i];
             }
         }
-        _nextStage();
         emit contractInitialized(address(this));
     }
 
@@ -107,7 +106,7 @@ contract ContractController is IContractInit, ContractStages, Initializable {
 
     function finalApproval() external onlyInitiator {
         _atStage(ContractManagementStages.FinalApprovalPending);
-        require(allPartiesApproved() == true, "All parties have not approved");
+        require(haveAllPartiesApproved() == true, "All parties have not approved");
         isFinalApprovalCompleted = true;
         if (contractData.isPayable == true) {
             makePayment();

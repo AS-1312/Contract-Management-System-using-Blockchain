@@ -33,8 +33,10 @@ export default function Initiate(props) {
           contractName: contractName,
           document: pathUrl
         }
-        await props.initiateNewContract(contractData);
-        window.location.href="/contracts";
+        const txStatus = await props.initiateNewContract(contractData);
+        if (txStatus) {
+          window.location.href="/contracts";
+        }
       } catch(error) {
         console.log("Error:", error);
       }
@@ -192,7 +194,7 @@ export default function Initiate(props) {
               </div>
               <br/>
             </form>
-            <br/>
+            <br/><br/>
           </div>
       </div>
       </React.Fragment>

@@ -29,11 +29,13 @@ export default function Contracts (props) {
             }
             <br/><br/>
             {
-                myContracts.map((contract, i) => {
+                myContracts.map((contract, key) => {
                     return(
-                        <a href={`/contract/${contract}`}>
-                            <h1 class="text-xl text-blue-900">{contract}</h1>
-                        </a>
+                        <div key={key}>
+                            <a href={`/contract/${contract}`}>
+                                <h1 class="text-xl text-blue-900">{contract}</h1>
+                            </a>
+                        </div>
                     );
                 })
             }
