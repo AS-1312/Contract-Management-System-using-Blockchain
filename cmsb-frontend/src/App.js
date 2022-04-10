@@ -10,6 +10,7 @@ import Contract from './components/Contract';
 
 import {
   loadProviderAndBlockchainData,
+  getDAIBalance,
   initiateNewContract,
   getMyContracts,
   getContractDetails
@@ -100,6 +101,7 @@ function App() {
                 <Initiate 
                   account={account}
                   setLoading={setLoading}
+                  getDAIBalance={getDAIBalance}
                   initiateNewContract={initiateNewContract}
                 />
               </Route>

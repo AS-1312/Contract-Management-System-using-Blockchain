@@ -15,8 +15,14 @@ export const loadProviderAndBlockchainData = async () => {
     factoryContract = new Contract(factoryContractAddress, ContractFactory.abi, provider);
 };
 
+export const getDAIBalance = async () => {
+    await loadProviderAndBlockchainData();
+    const balance = await daiContract.connect(signer).balanceOf(await signer.getAddress());
+    return ethers.utils.formatEther(balance);
+};
+
 export const initiateNewContract = async (contractData) => {
-    loadProviderAndBlockchainData();
+    await loadProviderAndBlockchainData();
     if (contractData.isPayable) {
         try {
             const tx = await daiContract.connect(signer).approve(factoryContract.address, ethers.utils.parseEther(contractData.fundDistribution.reduce((a, b) => a + b)));
@@ -27,6 +33,9 @@ export const initiateNewContract = async (contractData) => {
             window.alert("Approval failed");
             return false;
         }
+        contractData.fundDistribution.forEach((fund, id) => {
+            contractData.fundDistribution[id] = ethers.utils.parseEther(fund);
+        });
     }
     try {
         const tx = await factoryContract.connect(signer).initiateContract(contractData);
@@ -41,7 +50,7 @@ export const initiateNewContract = async (contractData) => {
 };
 
 export const getMyContracts = async () => {
-    loadProviderAndBlockchainData();
+    await loadProviderAndBlockchainData();
     const contracts = await factoryContract.connect(signer).getMyContracts();
     if (contracts) {
         return contracts;
@@ -51,7 +60,7 @@ export const getMyContracts = async () => {
 };
 
 export const getContractDetails = async (contractAddress) => {
-    loadProviderAndBlockchainData();
+    await loadProviderAndBlockchainData();
     const contractController = new Contract(contractAddress, ContractController.abi, provider);
     const contractStage = await contractController.connect(signer).getContractStage();
     const contractData = await contractController.connect(signer).viewContractData();

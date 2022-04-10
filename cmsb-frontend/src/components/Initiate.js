@@ -16,6 +16,7 @@ export default function Initiate(props) {
     const [fundDistribution, setFundDistribution] = useState([]);
     const [contractName, setContractName] = useState('');
     const [selectedFile, setSelectedFile] = useState();
+    const [daiBalance, setDAIBalance] = useState(0);
 
     const handleSubmit = async (event) => {
       event.preventDefault();
@@ -44,7 +45,12 @@ export default function Initiate(props) {
     }
 
     useEffect(() => {
+      async function fetchData() {
+        const daiBalance = await props.getDAIBalance();
+        setDAIBalance(daiBalance.toString());
+      }
 
+      fetchData();
     }, []);
 
     return(
@@ -55,7 +61,7 @@ export default function Initiate(props) {
         <br/>
         {
           message !== '' &&
-          <div class="flex flex-row justify-center items-center max-w-xl">
+          <div class="flex flex-row justify-center items-center max-w-screen px-16">
             <div class="bg-yellow-100 py-5 h-12 px-6 mb-3 text-base text-yellow-700 inline-flex items-center w-full" role="alert">
               <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="exclamation-triangle" class="w-4 h-4 mr-2 fill-current" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
                 <path fill="currentColor" d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"></path>
@@ -124,6 +130,9 @@ export default function Initiate(props) {
               { isPayable &&
                 <React.Fragment>
                 <div class="mb-3">
+                  <div class="flex flex-row justify-center">
+                    <h1>Your DAI Token Balance: {daiBalance}</h1>
+                  </div>
                   <br/>
                   <label for="funds-field" class="mb-3 block text-gray-700 text-xl">Parties Fund Distribution</label>
                   <input 
@@ -140,7 +149,7 @@ export default function Initiate(props) {
                       }
                        /*setFundDistribution(e.target.value)*/
                     }}
-                    placeholder="Enter the funds distribution for the parties" 
+                    placeholder="Enter the funds distribution for the parties (in USD)" 
                     required 
                   />
                 </div>
@@ -188,7 +197,15 @@ export default function Initiate(props) {
                 </div>
               </div>
               <br/><br/>
-
+              <div class="flex flex-row item-center justify-center">
+                {
+                  isPayable &&
+                  <React.Fragment>
+                    <h1>Note: Payable Contracts will have 2 stages of Confirmation: Approval and Initiation</h1>
+                    <br/><br/>
+                  </React.Fragment>
+                }
+              </div>
               <div class="flex flex-row item-center justify-center">
                 <button type="submit" class="relative py-3 px-12 bg-sky-600 hover:bg-sky-700 mr-5 rounded-md text-white text-lg focus:outline-none w-half disabled:opacity-10" disabled={message !== '' ? true : false}>Initiate New Contract</button>
               </div>

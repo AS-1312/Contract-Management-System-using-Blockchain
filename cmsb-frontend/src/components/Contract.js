@@ -16,10 +16,10 @@ export default function Contract (props) {
                 const contractDetails = await props.getContractDetails(match.params.id);
                 setContractDetails(contractDetails);
             }
+            props.setLoading(false);
         }
-        props.setLoading(true);
+        
         fetchData();
-        props.setLoading(false);
     }, []);
 
     return(
@@ -29,12 +29,54 @@ export default function Contract (props) {
                 <React.Fragment>
                     <br/>
                     <div class="flex flex-row justify-center items-center">
-                        <h2 class="text-xl font-bold text-sky-900">Details of Contract {match.params.id}</h2>
+                        <h2 class="text-2xl font-bold text-sky-900">Contract {match.params.id}</h2>
                     </div>
-                    <h1>Current stage: {contractDetails.stage}</h1>
-                    <h1>Contract Name: {contractDetails.data.contractName}</h1>
-                    <h1>Date of Expiration: {(new Date(parseInt(contractDetails.data.expiryTime.toString()))).toDateString()}</h1>
-                    <a href={contractDetails.data.document} target="_blank">View Doc</a>
+                    <br/><br/>
+                    <div class="flex flex-row h-full justify-center">
+                    <div style={{width: 800}} class="px-6 py-6 max-w-full mx-auto bg-zinc-100 shadow-lg rounded-md"> 
+                        <h1>Contract Name: {contractDetails.data.contractName}</h1>
+                        <br/>
+                        <h1>Initiating Party: {contractDetails.data.initiatingParty}</h1>
+                        <br/>
+                        <h1>Date of Expiration: {(new Date(parseInt(contractDetails.data.expiryTime.toString()))).toDateString()}</h1>
+                        <br/>
+                        <h1>Parties:</h1>
+                        {
+                            contractDetails.data.parties.map((party, key) => {
+                                return(
+                                    <h1>{party}</h1>
+                                );
+                            })
+                        }
+                        <br/>
+                        <div class="flex flex-wrap justify-center space-x-2">
+                            <a href={contractDetails.data.document} target="_blank">
+                                <span class="px-4 py-2 rounded-full border border-gray-300 text-slate-900 font-semibold text-lg flex align-center w-max cursor-pointer bg-sky-400 transition duration-300 ease">
+                                View Document
+                                </span>
+                            </a>
+                        </div>
+                        <br/>
+                        {
+                            contractDetails.stage == 0 &&
+                            <React.Fragment>
+                                <h1>Parties' Approval Pending</h1>
+                            </React.Fragment>
+                        }
+                        {
+                            contractDetails.stage == 1 &&
+                            <React.Fragment>
+                                <h1>Final Validation Pending</h1>
+                            </React.Fragment>
+                        }
+                        {
+                            contractDetails.stage == 2 &&
+                            <React.Fragment>
+                                <h1>Validated Contract</h1>
+                            </React.Fragment>
+                        }
+                    </div>
+                    </div>
                 </React.Fragment>
                 :
                 <React.Fragment>
