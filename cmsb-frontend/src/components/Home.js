@@ -7,8 +7,8 @@ export default function Home () {
             <div class="w-full lg:flex items-center">
                 <div class="w-full lg:w-1/2">
                     <h2 class="text-md lg:text-2xl text-medium text-gray-600">Blockchain Based System to</h2>
-                    <h1 class="text-5xl lg:text-6xl font-bold text-blue-600 mb-2 lg:mb-6">Manage Your Contracts</h1>
-                    <p class="text-md lg:text-xl text-gray-800 mb-8">Secure Archival storage and Management for Contract Initiation, Execution, Storage and Renewal</p>
+                    <h1 class="text-5xl lg:text-6xl font-bold text-blue-600 mb-2 lg:mb-6">Manage Your Contracts and Agreements</h1>
+                    <p class="text-md lg:text-2xl text-gray-800 mb-8 font-semibold">Secure Archival storage and Management for Contract Initiation, Execution, Storage and Renewal</p>
                 </div>
                 <div class="w-full lg:w-1/2 lg:pl-24">
                     <div class="bg-midnight text-tahiti">

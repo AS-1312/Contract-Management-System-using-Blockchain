@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useRouteMatch } from 'react-router-dom';
+import { ethers } from 'ethers';
 
 export default function Contract (props) {
 
@@ -49,6 +50,24 @@ export default function Contract (props) {
                             })
                         }
                         <br/>
+                        {
+                            contractDetails.data.isPayable === true ?
+                            <React.Fragment>
+                                <h1>Funds Distribution:</h1>
+                                {
+                                    contractDetails.data.fundDistribution.map((fund, key) => {
+                                        return(
+                                            <h1>{ethers.utils.formatEther(fund)} DAI</h1>
+                                        );
+                                    })
+                                }
+                            </React.Fragment>
+                            :
+                            <React.Fragment>
+                                <h1>Not a Payable Contract</h1>
+                            </React.Fragment>
+                        }
+                        <br/>
                         <div class="flex flex-wrap justify-center space-x-2">
                             <a href={contractDetails.data.document} target="_blank">
                                 <span class="px-4 py-2 rounded-full border border-gray-300 text-slate-900 font-semibold text-lg flex align-center w-max cursor-pointer bg-sky-400 transition duration-300 ease">
@@ -60,19 +79,31 @@ export default function Contract (props) {
                         {
                             contractDetails.stage == 0 &&
                             <React.Fragment>
-                                <h1>Parties' Approval Pending</h1>
+                                <h1>Pending Approval from Parties</h1>
                             </React.Fragment>
                         }
                         {
                             contractDetails.stage == 1 &&
                             <React.Fragment>
-                                <h1>Final Validation Pending</h1>
+                                <h1>Pending Final Validation from Initiating Party</h1>
                             </React.Fragment>
                         }
                         {
                             contractDetails.stage == 2 &&
                             <React.Fragment>
                                 <h1>Validated Contract</h1>
+                            </React.Fragment>
+                        }
+                        {
+                            contractDetails.stage == 3 &&
+                            <React.Fragment>
+                                <h1>Expired Contract</h1>
+                            </React.Fragment>
+                        }
+                        {
+                            contractDetails.stage == 4 &&
+                            <React.Fragment>
+                                <h1>Rejected Contract</h1>
                             </React.Fragment>
                         }
                     </div>

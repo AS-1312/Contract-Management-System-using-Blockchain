@@ -1,9 +1,6 @@
 const DAI  = artifacts.require("DAI");
 const ContractFactory = artifacts.require("ContractFactory");
 const ContractController = require("../build/contracts/ContractController.json");
-const ContractController1 = artifacts.require("ContractController");
-const ContractStages = artifacts.require("ContractStages")
-
 
 contract("CMSB Contracts Test", (accounts) => {
     let contractFactory, baseContract, dai, contractMain, contractStages;
@@ -12,8 +9,6 @@ contract("CMSB Contracts Test", (accounts) => {
         dai = await DAI.deployed();
         contractFactory = await ContractFactory.deployed();
         baseContract = await contractFactory.baseContract();
-        contractController = await ContractController1.deployed();
-        contractStages = await ContractStages.deployed()
 
         for (let i=0; i<5; ++i) {
             await dai.mint(accounts[i], web3.utils.toWei("100"));
@@ -36,7 +31,7 @@ contract("CMSB Contracts Test", (accounts) => {
         it("initiating party can create a new contract", async () => {
             let contractData = {
                 isPayable: false,
-                expiryTime: 0,
+                expiryTime: 1649675975,
                 fundDistribution: [0],
                 initiatingParty: accounts[1],
                 parties: [accounts[2], accounts[3]],
@@ -59,7 +54,7 @@ contract("CMSB Contracts Test", (accounts) => {
             const completeContractData = await contractMain.methods.viewContractData().call({from: accounts[1]});
             
             assert.equal(completeContractData.isPayable, false);
-            assert.equal(completeContractData.expiryTime, 2000000);
+            assert.equal(completeContractData.expiryTime, 1649675975);
             assert.equal(completeContractData.initiatingParty, accounts[1]);
             assert.equal(completeContractData.parties[0], accounts[2]);
             assert.equal(completeContractData.parties[1], accounts[3]);
@@ -68,9 +63,9 @@ contract("CMSB Contracts Test", (accounts) => {
         });
 
         it("list of contracts of a user can be retrieved", async () => {
-            let contractData = {
+            let contractData2 = {
                 isPayable: false,
-                expiryTime: 2000000,
+                expiryTime: 1649675970,
                 fundDistribution: [0, 0, 0],
                 initiatingParty: accounts[2],
                 parties: [accounts[4], accounts[5], accounts[6]],
@@ -78,7 +73,7 @@ contract("CMSB Contracts Test", (accounts) => {
                 document:"https://sampleuri.ipfs.io"
             };
             
-            await contractFactory.initiateContract(contractData, {from: accounts[2]});
+            await contractFactory.initiateContract(contractData2, {from: accounts[2]});
             const myContracts2 = await contractFactory.getMyContracts({from: accounts[2]});
             assert.equal(myContracts2.length, 2);
 
@@ -87,11 +82,9 @@ contract("CMSB Contracts Test", (accounts) => {
         });
 
 
-        it("To Check the current Stage", async () => {
-            await contractStages.currentStage;
-            // ContractManagementStages.PartyApprovalPending;
-            let Cstage = await contractStages.getContractStage()
-            assert.equal(contractStages.currentStage, Cstage)
+        it("current stage of a contract can be viewed", async () => {
+            let cStage = await contractMain.methods.getContractStage().call({from: accounts[1]});
+            assert.equal(cStage, 0);
         });
 
 
@@ -111,15 +104,11 @@ contract("CMSB Contracts Test", (accounts) => {
         //     assert.equal(Fapproval, _nextStage())
         // });
 
-        it("To check if Contract is Renewed", async () => {
-            await contractMain.methods.checkExpired.send({from :accounts[1]});
-            await contractMain.methods.renewContract(1000).send({from :accounts[1]});
-            const completeContractData = await contractMain.methods.viewContractData().call({from: accounts[1]});
-            assert.equal(completeContractData.expiryTime, 1000)
-        });
-
-       
-
-
+        // it("To check if Contract is Renewed", async () => {
+        //     await contractMain.methods.checkExpired.send({from :accounts[1]});
+        //     await contractMain.methods.renewContract(1000).send({from :accounts[1]});
+        //     const completeContractData = await contractMain.methods.viewContractData().call({from: accounts[1]});
+        //     assert.equal(completeContractData.expiryTime, 1000)
+        // });
     });
 });

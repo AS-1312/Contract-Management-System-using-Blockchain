@@ -27,7 +27,7 @@ export const initiateNewContract = async (contractData) => {
         try {
             const tx = await daiContract.connect(signer).approve(factoryContract.address, ethers.utils.parseEther(contractData.fundDistribution.reduce((a, b) => a + b)));
             await tx.wait();
-            window.alert("Approval successful");
+            window.alert("Approval successful, please wait for next transaction");
         } catch(error) {
             console.log(error)
             window.alert("Approval failed");
@@ -40,11 +40,14 @@ export const initiateNewContract = async (contractData) => {
     try {
         const tx = await factoryContract.connect(signer).initiateContract(contractData);
         await tx.wait();
-        window.alert("Transaction successful");
+        window.alert("Transaction was successful, contract created");
         return true;
     } catch(error) {
-        console.log(error)
-        window.alert("Transaction failed");
+        if (error.code === 4001) {
+            window.alert("Transaction was rejected by the user");
+        } else {
+            window.alert("Transaction failed");
+        }
         return false;
     }
 };

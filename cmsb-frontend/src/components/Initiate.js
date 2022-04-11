@@ -56,7 +56,7 @@ export default function Initiate(props) {
     return(
       <React.Fragment>
         <div class="h-20 flex flex-row justify-center items-center">
-          <h1 class="text-4xl font-bold text-sky-900">Contract Initiation</h1>
+          <h1 class="text-4xl font-bold text-sky-900">New Contract Initiation</h1>
         </div>
         <br/>
         {
@@ -84,9 +84,23 @@ export default function Initiate(props) {
                     id="contract-name-field"
                     value={contractName} 
                     onChange={(e) => setContractName(e.target.value)}
-                    placeholder="Enter the name of the contract" 
+                    placeholder="Enter the name of the contract/agreement" 
                     required 
                   />
+              </div>
+              <br/>
+
+              <div class="flex flex-row item-center justify-center">
+                <input 
+                  class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" 
+                  type="checkbox" 
+                  value={isPayable} 
+                  id="payable-check" 
+                  onChange={(e) => {setIsPayable(!isPayable)}}
+                />
+                <label class="form-check-label inline-block text-gray-800 text-lg" for="payable-check">
+                  Payable Contract
+                </label>
               </div>
               <br/>
 
@@ -110,20 +124,6 @@ export default function Initiate(props) {
                   placeholder="Enter the addresses of the parties" 
                   required 
                 />
-              </div>
-              <br/>
-
-              <div class="flex flex-row item-center justify-center">
-                <input 
-                  class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" 
-                  type="checkbox" 
-                  value={isPayable} 
-                  id="payable-check" 
-                  onChange={(e) =>  {setIsPayable(!isPayable)}}
-                />
-                <label class="form-check-label inline-block text-gray-800 text-lg" for="payable-check">
-                  Payable Contract ?
-                </label>
               </div>
               <br/>
 
@@ -158,14 +158,14 @@ export default function Initiate(props) {
               }
 
               <div class="flex flex-row item-center justify-center">
-                <label for="et-field" class="rounded-md border text-lg border-gray-200 p-3 focus:outline-none w-full">Choose Contract Expiry Date</label>
+                <label for="et-field" class="rounded-md border text-lg border-gray-200 p-3 focus:outline-none w-full">Choose Contract Expiration Date</label>
                 <DatePicker i="et-field" minDate={new Date()} value={expiryTime} onChange={(value) => {setExpiryTime(value)}} required />
               </div>
               <br/><br/>
 
               <div class="flex justify-center">
                 <div class="mb-3 w-96">
-                  <label for="formFile" class="form-label inline-block mb-2 text-gray-700 text-lg">Upload Contract Document</label>
+                  <label for="formFile" class="form-label inline-block mb-2 text-gray-700 text-lg">Upload Contract Document (pdf)</label>
                   <input 
                     class="form-control
                     block
@@ -196,12 +196,12 @@ export default function Initiate(props) {
                   />
                 </div>
               </div>
-              <br/><br/>
+              <br/>
               <div class="flex flex-row item-center justify-center">
                 {
                   isPayable &&
                   <React.Fragment>
-                    <h1>Note: Payable Contracts will have 2 stages of Confirmation: Approval and Initiation</h1>
+                    <h1>Note: Payable Contracts will have 2 stages of Confirmation - Approval and Initiation</h1>
                     <br/><br/>
                   </React.Fragment>
                 }
