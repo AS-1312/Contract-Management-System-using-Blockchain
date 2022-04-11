@@ -11,7 +11,7 @@ export default function Initiate(props) {
     const [isPayable, setIsPayable] = useState(false);
     const [expiryTime, setExpiryTime] = useState(new Date());
     const [party, setParty] = useState('');
-    const [fund, setFund] = useState();
+    const [fund, setFund] = useState(0);
     // const [parties, setParties] = useState([]);
     // const [fundDistribution, setFundDistribution] = useState([]);
     const [contractName, setContractName] = useState('');

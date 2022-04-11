@@ -48,7 +48,7 @@ export default function Contract (props) {
     const handlevalidateContract = async () => {
         try{
             props.setLoading(true);
-            const tx = await props.validateContract();
+            const tx = await props.validateContract(match.params.id);
             props.setLoading(false);
         }
         catch(error){
@@ -67,44 +67,48 @@ export default function Contract (props) {
                     </div>
                     <br/><br/>
                     <div class="flex flex-row h-full justify-center">
-                    <div style={{width: 800}} class="px-6 py-6 max-w-full mx-auto bg-slate-50 shadow-lg rounded-sm"> 
-                        <h1>{contractDetails.data.contractName}</h1>
-                        <br/>
-                        {
-                            contractDetails.data.initiatingParty === props.account ?
-                            <h1>You have Initiated this Contract</h1>
-                            :
-                            <h1>Initiating Party: {contractDetails.data.initiatingParty}</h1>
-                        }
-                        <br/>
-                        <h1>Date of Expiration: {(new Date(parseInt(contractDetails.data.expiryTime.toString()))).toDateString()}</h1>
-                        <br/>
-                        <h1>Second Party</h1>
-                        {
-                            contractDetails.data.parties.map((party, key) => {
-                                return(
-                                    <h1>{party}</h1>
-                                );
-                            })
-                        }
-                        <br/>
-                        {
-                            contractDetails.data.isPayable === true ?
-                            <React.Fragment>
-                                <h1>Funds Transfer Involved</h1>
-                                {
-                                    contractDetails.data.fundDistribution.map((fund, key) => {
-                                        return(
-                                            <h1>{ethers.utils.formatEther(fund)} DAI</h1>
-                                        );
-                                    })
-                                }
-                            </React.Fragment>
-                            :
-                            <React.Fragment>
-                                <h1>Not a Payable Contract</h1>
-                            </React.Fragment>
-                        }
+                    <div style={{width: 800}} class="px-6 py-6 max-w-full mx-auto bg-slate-100 shadow-xl rounded-sm"> 
+                        <div class="flex flex-col justify-center">
+                            <div class="flex flex-row justify-center">
+                                <h1 class="text-4xl text-slate-800">{contractDetails.data.contractName}</h1>
+                            </div>
+                            <br/>
+                            {
+                                contractDetails.data.initiatingParty === props.account ?
+                                <h1 class="text-lg">You have Initiated this Contract</h1>
+                                :
+                                <h1 class="text-lg">Initiating Party: {contractDetails.data.initiatingParty}</h1>
+                            }
+                            <br/>
+                            <h1 class="text-xl">Date of Expiration: {(new Date(parseInt(contractDetails.data.expiryTime.toString()))).toDateString()}</h1>
+                            <br/>
+                            <h1 class="text-xl">Second Party</h1>
+                            {
+                                contractDetails.data.parties.map((party, key) => {
+                                    return(
+                                        <h1>{party}</h1>
+                                    );
+                                })
+                            }
+                            <br/>
+                            {
+                                contractDetails.data.isPayable === true ?
+                                <React.Fragment>
+                                    <h1 class="text-xl">Funds Transfer Involved</h1>
+                                    {
+                                        contractDetails.data.fundDistribution.map((fund, key) => {
+                                            return(
+                                                <h1 class="text-lg">{ethers.utils.formatEther(fund)} DAI</h1>
+                                            );
+                                        })
+                                    }
+                                </React.Fragment>
+                                :
+                                <React.Fragment>
+                                    <h1 class="text-xl">Not a Payable Contract</h1>
+                                </React.Fragment>
+                            }
+                        </div>
                         <br/>
                         <div class="flex flex-wrap justify-center space-x-2">
                             <a href={contractDetails.data.document} target="_blank" rel="noreferrer">
@@ -117,34 +121,72 @@ export default function Contract (props) {
                         {
                             contractDetails.stage == 0 &&
                             <React.Fragment>
-                                <h1>Pending Approval from Parties</h1>
-                                <button onClick={handleapproveContract}>Approve Contract </button>
-                                <button onClick={handlerejectContract}>Reject Contract </button>
+                                <div class="flex flex-col justify-center">
+                                    <div class="flex flex-row justify-center">
+                                        <h1 class="text-slate-800 text-xl mb-4">Current Status: Pending Approval from Parties</h1>
+                                    </div>
+                                    {
+                                        contractDetails.data.initiatingParty != props.account &&
+                                        <React.Fragment>
+                                        {
+                                            contractDetails.currentApproved ?
+                                            <div class="flex flex-row justify-center">
+                                                <h1 class="text-slate-800 text-lg">You have already approved this contract</h1>
+                                            </div>
+                                            :
+                                            <div class="flex flex-row justify-center my-5">
+                                                <button class="py-2 px-6 mx-3 bg-emerald-500 hover:bg-emerald-400 rounded-md text-white" onClick={handleapproveContract}>Sign and Approve Contract </button>
+                                                <button class="py-2 px-6 mx-3 bg-red-500 hover:bg-red-400 rounded-md text-white" onClick={handlerejectContract}>Reject Contract </button>
+                                            </div>
+                                        }
+                                        </React.Fragment>
+                                    }
+                                </div>
                             </React.Fragment>
                         }
                         {
                             contractDetails.stage == 1 &&
                             <React.Fragment>
-                                <h1>Pending Final Validation from Initiating Party</h1>
-                                <button onClick={handlevalidateContract}>Validate Contract</button>
+                                <div class="flex flex-row justify-center">
+                                    <div class="flex flex-col justify-center">
+                                        <h1 class="text-slate-800 text-lg font-semibold mb-4">Current Status: Pending Final Approval from the Initiating Party</h1>
+                                        {
+                                            contractDetails.data.initiatingParty == props.account &&
+                                            <button class="py-2 px-6 bg-blue-500 hover:bg-blue-400 rounded-md text-white" onClick={handlevalidateContract}>Sign and Validate Contract</button>
+                                            
+                                        }
+                                    </div>
+                                </div>
                             </React.Fragment>
                         }
                         {
                             contractDetails.stage == 2 &&
                             <React.Fragment>
-                                <h1>Validated Contract</h1>
+                                <div class="flex flex-row justify-center">
+                                    <div class="flex flex-col justify-center">
+                                        <h1 class="text-slate-800 text-lg font-semibold mb-4">Current Status: Validated Contract</h1>
+                                    </div>
+                                </div>
                             </React.Fragment>
                         }
                         {
                             contractDetails.stage == 3 &&
                             <React.Fragment>
-                                <h1>Expired Contract</h1>
+                                <div class="flex flex-row justify-center">
+                                    <div class="flex flex-col justify-center">
+                                        <h1 class="text-slate-800 text-lg font-semibold mb-4">This Contract has Expired</h1>
+                                    </div>
+                                </div>
                             </React.Fragment>
                         }
                         {
                             contractDetails.stage == 4 &&
                             <React.Fragment>
-                                <h1>Rejected Contract</h1>
+                                <div class="flex flex-row justify-center">
+                                    <div class="flex flex-col justify-center">
+                                        <h1 class="text-red-600 text-lg font-semibold mb-4">This Contract has been rejected by the parties</h1>
+                                    </div>
+                                </div>
                             </React.Fragment>
                         }
                     </div>

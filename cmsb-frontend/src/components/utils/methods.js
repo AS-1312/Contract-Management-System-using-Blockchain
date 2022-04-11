@@ -122,7 +122,7 @@ export const validateContract = async (contractAddress) => {
         return true;
     } catch(error) {
         if (error.code === 4001) {
-            window.alert("Transaction was rejected by use");
+            window.alert("Transaction was rejected by the user");
         } else {
             window.alert("Transaction failed");
         }
