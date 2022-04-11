@@ -22,26 +22,28 @@ export default function Contract (props) {
         
         fetchData();
     }, []);
+
     const handlerejectContract = async () => {
         try {
             props.setLoading(true);
-            const tx = await props.rejectContract(match.params.id);
+            await props.rejectContract(match.params.id);
             props.setLoading(false);
         }
         catch(error) {
             console.log(error)
-    }
-}   
+        }
+    };
+
     const handleapproveContract = async () => {
         try {
             props.setLoading(true);
-            const tx = await props.approveContract(match.params.id);
+            await props.approveContract(match.params.id);
             props.setLoading(false);
         }
         catch(error) {
             console.log(error)
-    }
-}
+        }
+    };
 
     return(
         <React.Fragment>
@@ -50,18 +52,23 @@ export default function Contract (props) {
                 <React.Fragment>
                     <br/>
                     <div class="flex flex-row justify-center items-center">
-                        <h2 class="text-2xl font-bold text-sky-900">Contract {match.params.id}</h2>
+                        <h2 class="text-2xl font-semibold text-sky-900">Contract {match.params.id}</h2>
                     </div>
                     <br/><br/>
                     <div class="flex flex-row h-full justify-center">
-                    <div style={{width: 800}} class="px-6 py-6 max-w-full mx-auto bg-zinc-100 shadow-lg rounded-md"> 
-                        <h1>Contract Name: {contractDetails.data.contractName}</h1>
+                    <div style={{width: 800}} class="px-6 py-6 max-w-full mx-auto bg-slate-50 shadow-lg rounded-sm"> 
+                        <h1>{contractDetails.data.contractName}</h1>
                         <br/>
-                        <h1>Initiating Party: {contractDetails.data.initiatingParty}</h1>
+                        {
+                            contractDetails.data.initiatingParty === props.account ?
+                            <h1>You have Initiated this Contract</h1>
+                            :
+                            <h1>Initiating Party: {contractDetails.data.initiatingParty}</h1>
+                        }
                         <br/>
                         <h1>Date of Expiration: {(new Date(parseInt(contractDetails.data.expiryTime.toString()))).toDateString()}</h1>
                         <br/>
-                        <h1>Parties:</h1>
+                        <h1>Second Party</h1>
                         {
                             contractDetails.data.parties.map((party, key) => {
                                 return(
@@ -73,7 +80,7 @@ export default function Contract (props) {
                         {
                             contractDetails.data.isPayable === true ?
                             <React.Fragment>
-                                <h1>Funds Distribution:</h1>
+                                <h1>Funds Transfer Involved</h1>
                                 {
                                     contractDetails.data.fundDistribution.map((fund, key) => {
                                         return(
@@ -89,8 +96,8 @@ export default function Contract (props) {
                         }
                         <br/>
                         <div class="flex flex-wrap justify-center space-x-2">
-                            <a href={contractDetails.data.document} target="_blank">
-                                <span class="px-4 py-2 rounded-full border border-gray-300 text-slate-900 font-semibold text-lg flex align-center w-max cursor-pointer bg-sky-400 transition duration-300 ease">
+                            <a href={contractDetails.data.document} target="_blank" rel="noreferrer">
+                                <span class="px-4 py-2 rounded-full border border-gray-300 text-slate-900 font-semibold text-lg flex align-center w-max cursor-pointer bg-sky-400 hover:bg-sky-300">
                                 View Document
                                 </span>
                             </a>

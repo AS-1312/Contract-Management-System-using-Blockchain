@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { HalfCircleSpinner } from 'react-epic-spinners';
 
 import Home from './components/Home';
@@ -27,7 +27,6 @@ function App() {
     isLoading,
     connect,
     disconnect,
-    shouldDisable,
     library 
   } = useMetaMask();
 

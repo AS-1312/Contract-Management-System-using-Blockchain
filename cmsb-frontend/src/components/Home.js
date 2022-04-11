@@ -1,4 +1,5 @@
 import React from 'react';
+import logo from './assets/logo.png';
 
 export default function Home () {
     return(
@@ -12,9 +13,10 @@ export default function Home () {
                 </div>
                 <div class="w-full lg:w-1/2 lg:pl-24">
                     <div class="bg-midnight text-tahiti">
-                        <h1 className='text-3xl text-indigo-800'>Contract Management System using Blockchain</h1>
                         <header className="App-header">
-                                                  
+                            <img src={logo} alt="logo" />
+                            <br/>
+                            <h1 className='text-3xl text-indigo-800'>Contract Management System using Blockchain</h1>             
                         </header>
                     </div>
                 </div>

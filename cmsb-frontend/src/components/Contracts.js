@@ -23,7 +23,7 @@ export default function Contracts (props) {
                 </div>
                 :
                 <div class="flex flex-row justify-center items-center">
-                    <h2 class="text-4xl font-bold text-sky-900">Your Contracts</h2>
+                    <h2 class="text-4xl font-semibold text-sky-900">Participating Contracts</h2>
                 </div>
             }
             <br/><br/>

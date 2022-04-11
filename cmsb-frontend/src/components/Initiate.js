@@ -11,9 +11,9 @@ export default function Initiate(props) {
     const [isPayable, setIsPayable] = useState(false);
     const [expiryTime, setExpiryTime] = useState(new Date());
     const [party, setParty] = useState('');
-    const [fund, setFund] = useState(0);
-    const [parties, setParties] = useState([]);
-    const [fundDistribution, setFundDistribution] = useState([]);
+    const [fund, setFund] = useState();
+    // const [parties, setParties] = useState([]);
+    // const [fundDistribution, setFundDistribution] = useState([]);
     const [contractName, setContractName] = useState('');
     const [selectedFile, setSelectedFile] = useState();
     const [daiBalance, setDAIBalance] = useState(0);
@@ -56,7 +56,7 @@ export default function Initiate(props) {
     return(
       <React.Fragment>
         <div class="h-20 flex flex-row justify-center items-center">
-          <h1 class="text-4xl font-bold text-sky-900">New Contract Initiation</h1>
+          <h1 class="text-4xl font-semibold text-sky-900">New Contract Initiation</h1>
         </div>
         <br/>
         {
@@ -106,7 +106,7 @@ export default function Initiate(props) {
 
               <div class="mb-3">
                 <br/>
-                <label for="parties-field" class="mb-3 block text-gray-700 text-xl">Parties Addresses</label>
+                <label for="parties-field" class="mb-3 block text-gray-700 text-xl">Party Address</label>
                 <input 
                   type="text" 
                   class="bg-white rounded-md border border-gray-200 p-3 focus:outline-none w-full" 
@@ -121,7 +121,7 @@ export default function Initiate(props) {
                     }
                      /*setParties([...parties, e.target.value])*/
                   }}
-                  placeholder="Enter the addresses of the parties" 
+                  placeholder="Enter the address of the second party" 
                   required 
                 />
               </div>
@@ -133,8 +133,8 @@ export default function Initiate(props) {
                   <div class="flex flex-row justify-center">
                     <h1>Your DAI Token Balance: {daiBalance}</h1>
                   </div>
-                  <br/>
-                  <label for="funds-field" class="mb-3 block text-gray-700 text-xl">Parties Fund Distribution</label>
+                  <br/><br/>
+                  <label for="funds-field" class="mb-3 block text-gray-700 text-xl">Fund Transfer</label>
                   <input 
                     type="text" 
                     class="bg-white rounded-md border border-gray-200 p-3 focus:outline-none w-full" 
@@ -142,14 +142,18 @@ export default function Initiate(props) {
                     value={fund} 
                     onChange={(e) => {
                       setFund(e.target.value);
-                      if (!isNaN(e.target.value)) {
-                        setMessage('');
+                      if (!isNaN(e.target.value) || e.target.value === 0) {
+                        if (e.target.value > daiBalance) {
+                          setMessage('You do not have sufficient DAI balance');
+                        } else {
+                          setMessage('');
+                        }
                       } else {
-                        setMessage('Invalid amount entered');
+                        setMessage('Invalid amount or text entered');
                       }
                        /*setFundDistribution(e.target.value)*/
                     }}
-                    placeholder="Enter the funds distribution for the parties (in USD)" 
+                    placeholder="Enter the amount to be transferred to the Party (in USD)" 
                     required 
                   />
                 </div>
