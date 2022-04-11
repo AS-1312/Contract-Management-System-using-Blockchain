@@ -56,6 +56,10 @@ contract ContractController is IContractInit, ContractStages, Initializable {
         return hasPartyApproved[msg.sender];
     }
 
+    function hasContractExpired() public view returns (bool) {
+        return block.timestamp >= contractData.expiryTime;
+    }
+
     function getContractStage() external view onlyParty returns (uint) {
         return uint(currentStage);
     }
@@ -125,7 +129,7 @@ contract ContractController is IContractInit, ContractStages, Initializable {
     }
 
     function checkExpired() external {
-        if (block.timestamp >= contractData.expiryTime) {
+        if (hasContractExpired()) {
             _jumpToStage(ContractManagementStages.Expired);
         }
     }
