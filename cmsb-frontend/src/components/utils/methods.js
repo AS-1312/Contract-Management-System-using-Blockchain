@@ -110,5 +110,23 @@ export const rejectContract = async (contractAddress) => {
         }
         return false;
     }
+};
+
+export const validateContract = async (contractAddress) => {
+    await loadProviderAndBlockchainData();
+    const contractController = new Contract(contractAddress, ContractController.abi, provider);
+    try {
+        const tx = await contractController.connect(signer).finalApproval();
+        await tx.wait();
+        window.alert("Transaction was successful, contract has been validated");
+        return true;
+    } catch(error) {
+        if (error.code === 4001) {
+            window.alert("Transaction was rejected by use");
+        } else {
+            window.alert("Transaction failed");
+        }
+        return false;
+    }
 
 };

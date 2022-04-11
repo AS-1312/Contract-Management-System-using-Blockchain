@@ -45,6 +45,17 @@ export default function Contract (props) {
         }
     };
 
+    const handlevalidateContract = async () => {
+        try{
+            props.setLoading(true);
+            const tx = await props.validateContract();
+            props.setLoading(false);
+        }
+        catch(error){
+            console.log(error);
+        }  
+    };      
+
     return(
         <React.Fragment>
             {
@@ -115,6 +126,7 @@ export default function Contract (props) {
                             contractDetails.stage == 1 &&
                             <React.Fragment>
                                 <h1>Pending Final Validation from Initiating Party</h1>
+                                <button onClick={handlevalidateContract}>Validate Contract</button>
                             </React.Fragment>
                         }
                         {
