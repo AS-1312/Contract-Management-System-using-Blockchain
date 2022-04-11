@@ -3,8 +3,8 @@ import DAI from '../../abis/DAI.json';
 import ContractFactory from '../../abis/ContractFactory.json';
 import ContractController from '../../abis/ContractController.json';
 
-const daiContractAddress = "0x74488dBb8db5f46EeA045e8151c5f93c7584194d";
-const factoryContractAddress = "0x1a494A57C9C0e7cdcD7c81c7b85105BE0C82Aa27";
+const daiContractAddress = "0x70037964E033396ED756604394872ED26e4523d0";
+const factoryContractAddress = "0x15b0d726537B69A870844127B2BAC5C6FBf962d2";
 
 let signer, provider, factoryContract, daiContract;
 

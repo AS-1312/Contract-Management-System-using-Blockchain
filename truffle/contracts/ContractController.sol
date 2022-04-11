@@ -43,8 +43,8 @@ contract ContractController is IContractInit, ContractStages, Initializable {
 
     function haveAllPartiesApproved() public view onlyParty returns (bool) {
         bool approved = true ;
-        for (uint i=0;i<contractData.parties.length;i++) {
-            if (hasPartyApproved[contractData.parties[i]]==false) {
+        for (uint i=0; i < contractData.parties.length; i++) {
+            if (hasPartyApproved[contractData.parties[i]] == false) {
                 approved = false;
                 break;
             }            
@@ -95,6 +95,9 @@ contract ContractController is IContractInit, ContractStages, Initializable {
     function approveContract() external onlyParty {
         _atStage(ContractManagementStages.PartyApprovalPending);
         hasPartyApproved[msg.sender] = true;
+        if (haveAllPartiesApproved()) {
+            _nextStage();
+        }
         emit partyApproved(msg.sender, address(this));  
     } 
 
@@ -117,7 +120,8 @@ contract ContractController is IContractInit, ContractStages, Initializable {
 
     function renewContract(uint extendedTime) external onlyInitiator {
         _atStage(ContractManagementStages.Expired);
-        contractData.expiryTime += extendedTime;
+        contractData.expiryTime = extendedTime;
+        _jumpToStage(ContractManagementStages.Validated);
     }
 
     function checkExpired() external {
