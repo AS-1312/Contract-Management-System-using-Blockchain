@@ -13,7 +13,9 @@ import {
   getDAIBalance,
   initiateNewContract,
   getMyContracts,
-  getContractDetails
+  getContractDetails,
+  approveContract,
+  rejectContract,
 } from './components/utils/methods';
 import useMetaMask from './hooks/metamask';
 
@@ -118,6 +120,8 @@ function App() {
                   setLoading={setLoading}
                   getMyContracts={getMyContracts}
                   getContractDetails={getContractDetails}
+                  approveContract={approveContract}
+                  rejectContract={rejectContract}
                 />
               </Route>
             </Switch>

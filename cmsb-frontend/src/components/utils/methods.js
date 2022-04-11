@@ -75,3 +75,40 @@ export const getContractDetails = async (contractAddress) => {
     };
     return fullContractDetails;
 };
+
+export const approveContract = async (contractAddress) => {
+    await loadProviderAndBlockchainData();
+    const contractController = new Contract(contractAddress, ContractController.abi, provider);
+    try {
+        const tx = await contractController.connect(signer).approveContract();
+        await tx.wait();
+        window.alert("Transaction was successful, contract approved");
+        return true;
+    } catch(error) {
+        if (error.code === 4001) {
+            window.alert("Transaction was rejected by the user");
+        } else {
+            window.alert("Transaction failed");
+        }
+        return false;
+    }
+};
+
+export const rejectContract = async (contractAddress) => {
+    await loadProviderAndBlockchainData();
+    const contractController = new Contract(contractAddress, ContractController.abi, provider);
+    try {
+        const tx = await contractController.connect(signer).rejectContract();
+        await tx.wait();
+        window.alert("Transaction was successful, contract rejected");
+        return true;
+    } catch(error) {
+        if (error.code === 4001) {
+            window.alert("Transaction was rejected by the user");
+        } else {
+            window.alert("Transaction failed");
+        }
+        return false;
+    }
+
+};

@@ -22,6 +22,26 @@ export default function Contract (props) {
         
         fetchData();
     }, []);
+    const handlerejectContract = async () => {
+        try {
+            props.setLoading(true);
+            const tx = await props.rejectContract(match.params.id);
+            props.setLoading(false);
+        }
+        catch(error) {
+            console.log(error)
+    }
+}   
+    const handleapproveContract = async () => {
+        try {
+            props.setLoading(true);
+            const tx = await props.approveContract(match.params.id);
+            props.setLoading(false);
+        }
+        catch(error) {
+            console.log(error)
+    }
+}
 
     return(
         <React.Fragment>
@@ -80,6 +100,8 @@ export default function Contract (props) {
                             contractDetails.stage == 0 &&
                             <React.Fragment>
                                 <h1>Pending Approval from Parties</h1>
+                                <button onClick={handleapproveContract}>Approve Contract </button>
+                                <button onClick={handlerejectContract}>Reject Contract </button>
                             </React.Fragment>
                         }
                         {
