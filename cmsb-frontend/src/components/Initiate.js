@@ -163,7 +163,7 @@ export default function Initiate(props) {
 
               <div class="flex flex-row item-center justify-center">
                 <label for="et-field" class="rounded-md border text-lg border-gray-200 p-3 focus:outline-none w-full">Choose Contract Expiration Date</label>
-                <DatePicker i="et-field" minDate={new Date()} value={expiryTime} onChange={(value) => {setExpiryTime(value)}} required />
+                <DatePicker i="et-field"  value={expiryTime} onChange={(value) => {setExpiryTime(value)}} required />
               </div>
               <br/><br/>
 

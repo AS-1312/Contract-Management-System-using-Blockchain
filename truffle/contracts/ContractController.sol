@@ -57,7 +57,7 @@ contract ContractController is IContractInit, ContractStages, Initializable {
     }
 
     function hasContractExpired() public view returns (bool) {
-        return block.timestamp >= contractData.expiryTime;
+        return (1000 * block.timestamp) >= contractData.expiryTime;
     }
 
     function getContractStage() external view onlyParty returns (uint) {

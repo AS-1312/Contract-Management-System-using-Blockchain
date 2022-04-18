@@ -3,8 +3,8 @@ import DAI from '../../abis/DAI.json';
 import ContractFactory from '../../abis/ContractFactory.json';
 import ContractController from '../../abis/ContractController.json';
 
-const daiContractAddress = "0x4F74E62f9a4873AF8b86e3056a54390A1Fa10Fa1";
-const factoryContractAddress = "0xD5a5DDd73fd2ecE51314d02bE357Da7ABAdF59E2";
+const daiContractAddress = "0x61A344cC7c8a6c64e3446cE9Fb02afE6b027aB84";
+const factoryContractAddress = "0xF2D791Fa1EE5eF61Da67860cdE3e8E19eb4E9950";
 
 let signer, provider, factoryContract, daiContract;
 
@@ -125,6 +125,25 @@ export const validateContract = async (contractAddress) => {
             window.alert("Transaction was rejected by the user");
         } else {
             window.alert("Transaction failed");
+        }
+        return false;
+    }
+};
+
+export const renewContract = async (contractAddress, expiryTime) => {
+    await loadProviderAndBlockchainData();
+    const contractController = new Contract(contractAddress, ContractController.abi, provider);
+    try {
+        const tx = await contractController.connect(signer).renewContract(expiryTime);
+        await tx.wait();
+        window.alert("Transaction was successful, contract has been renewed");
+        return true;
+    } catch(error) {
+        if (error.code === 4001) {
+            window.alert("Transaction was rejected by the user");
+        } else {
+            window.alert("Transaction failed");
+            console.log(error)
         }
         return false;
     }

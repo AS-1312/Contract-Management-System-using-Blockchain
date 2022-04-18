@@ -10,7 +10,7 @@ module.exports = {
       network_id: "*"
     },
     mumbai: {
-      provider: () => new HDWalletProvider(mnemonic, "https://matic-mumbai.chainstacklabs.com/"),
+      provider: () => new HDWalletProvider(mnemonic, "https://polygon-mumbai.g.alchemy.com/v2/EFN5USY_3K58j09FBtOCH6lm8NHIl25T"),
       network_id: 80001,
       confirmations: 2,
       timeoutBlocks: 200,

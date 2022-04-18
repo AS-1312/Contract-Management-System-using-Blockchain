@@ -3,7 +3,6 @@ import { useRouteMatch } from 'react-router-dom';
 import { ethers } from 'ethers';
 import DatePicker from 'react-date-picker';
 
-
 export default function Contract (props) {
 
     const match = useRouteMatch();
@@ -62,7 +61,8 @@ export default function Contract (props) {
     const handleRenewContract = async () => {
         try{
             props.setLoading(true);
-            const tx = await props.renewContract(match.params.id, newExpiryTime);
+            const timestamp = Date.parse(newExpiryTime);
+            const tx = await props.renewContract(match.params.id, timestamp);
             props.setLoading(false);
         }
         catch(error){
@@ -85,19 +85,19 @@ export default function Contract (props) {
                     <div style={{width: 800}} class="px-6 py-6 max-w-full mx-auto bg-slate-100 shadow-xl rounded-sm"> 
                         <div class="flex flex-col justify-center">
                             <div class="flex flex-row justify-center">
-                                <h1 class="text-4xl text-slate-800">{contractDetails.data.contractName}</h1>
+                                <h1 class="text-4xl text-blue-900 font-semibold">{contractDetails.data.contractName}</h1>
                             </div>
                             <br/>
                             {
                                 contractDetails.data.initiatingParty === props.account ?
-                                <h1 class="text-lg">You have Initiated this Contract</h1>
+                                <h1 class="text-lg font-semibold">You have Initiated this Contract</h1>
                                 :
-                                <h1 class="text-lg">Initiating Party: {contractDetails.data.initiatingParty}</h1>
+                                <h1 class="text-lg font-semibold">Initiating Party: {contractDetails.data.initiatingParty}</h1>
                             }
                             <br/>
-                            <h1 class="text-xl">Date of Expiration: {(new Date(parseInt(contractDetails.data.expiryTime.toString()))).toDateString()}</h1>
+                            <h1 class="text-xl font-semibold">Date of Expiration: {(new Date(parseInt(contractDetails.data.expiryTime.toString()))).toDateString()}</h1>
                             <br/>
-                            <h1 class="text-xl">Second Party</h1>
+                            <h1 class="text-xl font-semibold">Second Party</h1>
                             {
                                 contractDetails.data.parties.map((party, key) => {
                                     return(
@@ -109,7 +109,7 @@ export default function Contract (props) {
                             {
                                 contractDetails.data.isPayable === true ?
                                 <React.Fragment>
-                                    <h1 class="text-xl">Funds Transfer Involved</h1>
+                                    <h1 class="text-xl font-semibold">Funds Transfer Involved</h1>
                                     {
                                         contractDetails.data.fundDistribution.map((fund, key) => {
                                             return(
@@ -179,7 +179,8 @@ export default function Contract (props) {
                             <React.Fragment>
                                 <div class="flex flex-row justify-center">
                                     <div class="flex flex-col justify-center">
-                                        <h1 class="text-slate-800 text-lg font-semibold mb-4">Current Status: Validated Contract</h1>
+                                    <h1 class="text-slate-800 text-xl font-semibold mb-4">Current Status: <span class="text-green-800">Active Contract</span></h1>
+                                        <h1 class="text-lg">Contract has been approved by the parties and succesfully validated</h1>
                                     </div>
                                 </div>
                             </React.Fragment>
@@ -188,17 +189,17 @@ export default function Contract (props) {
                             contractDetails.stage == 3 &&
                             <React.Fragment>
                                 <div class="flex flex-row justify-center">
-                                    <div class="flex flex-col justify-center">
-                                        <h1 class="text-slate-800 text-lg font-semibold mb-4">This Contract has Expired</h1>
-                                    </div>
+                                    <div class="flex flex-col justify-center items-center">
+                                        <h1 class="text-slate-800 text-lg font-semibold mb-4">!!! This Contract has Expired</h1>
                                     {
-                                    <div class="flex flex-row item-center justify-center">
-                                        <label for="et-field" class="rounded-md border text-lg border-gray-200 p-3 focus:outline-none w-full">Choose New Contract Expiration Date</label>
-                                        <DatePicker i="et-field" minDate={new Date()} value={newExpiryTime} onChange={(value) => {setNewExpiryTime(value)}} required />
-                                            contractDetails.data.initiatingParty == props.account &&
-                                            <button class="py-2 px-6 bg-blue-500 hover:bg-blue-400 rounded-md text-white" onClick={handlevalidateContract}>Sign and Validate Contract</button>
-                                    </div>
+                                        contractDetails.data.initiatingParty == props.account &&
+                                        <div class="flex flex-col item-center justify-center">
+                                            <label for="et-field" class="rounded-md border text-lg border-gray-200 p-3 focus:outline-none w-full">Choose New Contract Expiration Date</label>
+                                            <DatePicker i="et-field" minDate={new Date()} value={newExpiryTime} onChange={(value) => {setNewExpiryTime(value)}} required />
+                                            <button class="py-2 px-6 bg-blue-500 hover:bg-blue-400 rounded-md text-white mt-5" onClick={handleRenewContract}>Renew Contract</button>
+                                        </div>
                                     }
+                                    </div>
                                     <br/><br/>
                                 </div>
                             </React.Fragment>
