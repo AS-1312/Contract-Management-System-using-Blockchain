@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useRouteMatch } from 'react-router-dom';
 import { ethers } from 'ethers';
+import DatePicker from 'react-date-picker';
+
 
 export default function Contract (props) {
 
     const match = useRouteMatch();
     const [contractDetails, setContractDetails] = useState();
+    const [newExpiryTime, setNewExpiryTime] = useState(new Date()); 
 
     useEffect(() => {
         async function fetchData() {
@@ -55,6 +58,18 @@ export default function Contract (props) {
             console.log(error);
         }  
     };      
+
+    const handleRenewContract = async () => {
+        try{
+            props.setLoading(true);
+            const tx = await props.renewContract(match.params.id, newExpiryTime);
+            props.setLoading(false);
+        }
+        catch(error){
+            console.log(error);
+        }  
+    };      
+
 
     return(
         <React.Fragment>
@@ -176,6 +191,15 @@ export default function Contract (props) {
                                     <div class="flex flex-col justify-center">
                                         <h1 class="text-slate-800 text-lg font-semibold mb-4">This Contract has Expired</h1>
                                     </div>
+                                    {
+                                    <div class="flex flex-row item-center justify-center">
+                                        <label for="et-field" class="rounded-md border text-lg border-gray-200 p-3 focus:outline-none w-full">Choose New Contract Expiration Date</label>
+                                        <DatePicker i="et-field" minDate={new Date()} value={newExpiryTime} onChange={(value) => {setNewExpiryTime(value)}} required />
+                                            contractDetails.data.initiatingParty == props.account &&
+                                            <button class="py-2 px-6 bg-blue-500 hover:bg-blue-400 rounded-md text-white" onClick={handlevalidateContract}>Sign and Validate Contract</button>
+                                    </div>
+                                    }
+                                    <br/><br/>
                                 </div>
                             </React.Fragment>
                         }
