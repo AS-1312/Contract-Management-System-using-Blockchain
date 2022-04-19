@@ -7,8 +7,8 @@ Decentralized System for Contract Life-Cycle Management, deployed on Polygon Tes
 
 | Contract | Deployed address  |
 | :----- | :- |
-| [ContractFactory](https://mumbai.polygonscan.com/address/0xD5a5DDd73fd2ecE51314d02bE357Da7ABAdF59E2) | `0xD5a5DDd73fd2ecE51314d02bE357Da7ABAdF59E2` |
-| [Test DAI](https://mumbai.polygonscan.com/address/0x4F74E62f9a4873AF8b86e3056a54390A1Fa10Fa1) | `0x4F74E62f9a4873AF8b86e3056a54390A1Fa10Fa1`|
+| [ContractFactory](https://mumbai.polygonscan.com/address/0xF2D791Fa1EE5eF61Da67860cdE3e8E19eb4E9950) | `0xF2D791Fa1EE5eF61Da67860cdE3e8E19eb4E9950` |
+| [Test DAI](https://mumbai.polygonscan.com/address/0x61A344cC7c8a6c64e3446cE9Fb02afE6b027aB84) | `0x61A344cC7c8a6c64e3446cE9Fb02afE6b027aB84`|
 
 
 
