@@ -12,9 +12,18 @@ module.exports = function override(config) {
         "url": require.resolve("url")
     })
     config.resolve.fallback = fallback;
+
+    // Fix for "fully specified" error in Webpack 5 (axios/process issue)
+    config.module.rules.push({
+        test: /\.m?js/,
+        resolve: {
+            fullySpecified: false
+        }
+    });
+
     config.plugins = (config.plugins || []).concat([
         new webpack.ProvidePlugin({
-            process: 'process/browser',
+            process: 'process/browser.js',
             Buffer: ['buffer', 'Buffer']
         })
     ])
