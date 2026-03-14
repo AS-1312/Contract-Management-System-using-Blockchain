@@ -33,14 +33,14 @@ module.exports = {
     sepolia: {
       provider: () => new HDWalletProvider(
         mnemonic,
-        "https://rpc.sepolia.org"  // Free public RPC
-        // Or use Alchemy: "https://eth-sepolia.g.alchemy.com/v2/YOUR_API_KEY"
-        // Or use Infura: "https://sepolia.infura.io/v3/YOUR_PROJECT_ID"
+        "https://ethereum-sepolia-rpc.publicnode.com"  // Alternative active public RPC
       ),
       network_id: 11155111,
       confirmations: 2,
       timeoutBlocks: 200,
-      skipDryRun: true
+      skipDryRun: true,
+      networkCheckTimeout: 1000000, // Increase timeout to handle slow public RPCs
+      pollingInterval: 15000
     },
 
     // ---- OLD: Polygon Mumbai (DEPRECATED - DO NOT USE) ----
