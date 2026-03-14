@@ -4,18 +4,50 @@ const mnemonic = fs.readFileSync(".secret").toString().trim();
 
 module.exports = {
   networks: {
+    // ---- Local Development (Ganache) ----
     development: {
       host: "127.0.0.1",
       port: 8545,
       network_id: "*"
     },
-    mumbai: {
-      provider: () => new HDWalletProvider(mnemonic, "https://polygon-mumbai.g.alchemy.com/v2/EFN5USY_3K58j09FBtOCH6lm8NHIl25T"),
-      network_id: 80001,
+
+    // ---- Polygon Amoy Testnet (Mumbai successor) ----
+    // Faucet: https://faucet.polygon.technology/
+    // Explorer: https://amoy.polygonscan.com/
+    amoy: {
+      provider: () => new HDWalletProvider(
+        mnemonic,
+        "https://rpc-amoy.polygon.technology/"  // Free public RPC
+        // Or use Alchemy: "https://polygon-amoy.g.alchemy.com/v2/YOUR_API_KEY"
+      ),
+      network_id: 80002,
+      confirmations: 2,
+      timeoutBlocks: 200,
+      skipDryRun: true,
+      gasPrice: 30000000000  // 30 gwei
+    },
+
+    // ---- Ethereum Sepolia Testnet ----
+    // Faucet: https://sepoliafaucet.com/ or https://www.alchemy.com/faucets/ethereum-sepolia
+    // Explorer: https://sepolia.etherscan.io/
+    sepolia: {
+      provider: () => new HDWalletProvider(
+        mnemonic,
+        "https://rpc.sepolia.org"  // Free public RPC
+        // Or use Alchemy: "https://eth-sepolia.g.alchemy.com/v2/YOUR_API_KEY"
+        // Or use Infura: "https://sepolia.infura.io/v3/YOUR_PROJECT_ID"
+      ),
+      network_id: 11155111,
       confirmations: 2,
       timeoutBlocks: 200,
       skipDryRun: true
-    }
+    },
+
+    // ---- OLD: Polygon Mumbai (DEPRECATED - DO NOT USE) ----
+    // mumbai: {
+    //   provider: () => new HDWalletProvider(mnemonic, "https://polygon-mumbai.g.alchemy.com/v2/..."),
+    //   network_id: 80001,
+    // }
   },
 
   compilers: {
