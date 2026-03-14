@@ -3,8 +3,8 @@ import DAI from '../../abis/DAI.json';
 import ContractFactory from '../../abis/ContractFactory.json';
 import ContractController from '../../abis/ContractController.json';
 
-const daiContractAddress = "0x61A344cC7c8a6c64e3446cE9Fb02afE6b027aB84";
-const factoryContractAddress = "0xF2D791Fa1EE5eF61Da67860cdE3e8E19eb4E9950";
+const daiContractAddress = "0xa41785a013642de3cdD513d499f756A877876c36";
+const factoryContractAddress = "0xA20CA4C4ab586dA7AcD75C3315105003723f9bB7";
 
 let signer, provider, factoryContract, daiContract;
 
@@ -28,7 +28,7 @@ export const initiateNewContract = async (contractData) => {
             const tx = await daiContract.connect(signer).approve(factoryContract.address, ethers.utils.parseEther(contractData.fundDistribution.reduce((a, b) => a + b)));
             await tx.wait();
             window.alert("Approval successful, please wait for next transaction");
-        } catch(error) {
+        } catch (error) {
             console.log(error)
             window.alert("Approval failed");
             return false;
@@ -42,7 +42,7 @@ export const initiateNewContract = async (contractData) => {
         await tx.wait();
         window.alert("Transaction was successful, contract created");
         return true;
-    } catch(error) {
+    } catch (error) {
         if (error.code === 4001) {
             window.alert("Transaction was rejected by the user");
         } else {
@@ -84,7 +84,7 @@ export const approveContract = async (contractAddress) => {
         await tx.wait();
         window.alert("Transaction was successful, contract approved");
         return true;
-    } catch(error) {
+    } catch (error) {
         if (error.code === 4001) {
             window.alert("Transaction was rejected by the user");
         } else {
@@ -102,7 +102,7 @@ export const rejectContract = async (contractAddress) => {
         await tx.wait();
         window.alert("Transaction was successful, contract rejected");
         return true;
-    } catch(error) {
+    } catch (error) {
         if (error.code === 4001) {
             window.alert("Transaction was rejected by the user");
         } else {
@@ -120,7 +120,7 @@ export const validateContract = async (contractAddress) => {
         await tx.wait();
         window.alert("Transaction was successful, contract has been validated");
         return true;
-    } catch(error) {
+    } catch (error) {
         if (error.code === 4001) {
             window.alert("Transaction was rejected by the user");
         } else {
@@ -138,7 +138,7 @@ export const renewContract = async (contractAddress, expiryTime) => {
         await tx.wait();
         window.alert("Transaction was successful, contract has been renewed");
         return true;
-    } catch(error) {
+    } catch (error) {
         if (error.code === 4001) {
             window.alert("Transaction was rejected by the user");
         } else {

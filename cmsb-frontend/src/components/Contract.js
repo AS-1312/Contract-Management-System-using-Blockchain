@@ -3,25 +3,24 @@ import { useRouteMatch } from 'react-router-dom';
 import { ethers } from 'ethers';
 import DatePicker from 'react-date-picker';
 
-export default function Contract (props) {
+export default function Contract(props) {
 
     const match = useRouteMatch();
     const [contractDetails, setContractDetails] = useState();
-    const [newExpiryTime, setNewExpiryTime] = useState(new Date()); 
+    const [newExpiryTime, setNewExpiryTime] = useState(new Date());
 
     useEffect(() => {
         async function fetchData() {
             const contracts = await props.getMyContracts();
             if (!contracts.includes(match.params.id)) {
                 window.alert("Invalid Contract...redirecting");
-                window.location.href='/contracts';
+                window.location.href = '/contracts';
             } else {
                 const contractDetails = await props.getContractDetails(match.params.id);
                 setContractDetails(contractDetails);
             }
             props.setLoading(false);
         }
-        
         fetchData();
     }, []);
 
@@ -30,9 +29,8 @@ export default function Contract (props) {
             props.setLoading(true);
             await props.rejectContract(match.params.id);
             props.setLoading(false);
-        }
-        catch(error) {
-            console.log(error)
+        } catch (error) {
+            console.log(error);
         }
     };
 
@@ -41,189 +39,222 @@ export default function Contract (props) {
             props.setLoading(true);
             await props.approveContract(match.params.id);
             props.setLoading(false);
-        }
-        catch(error) {
-            console.log(error)
+        } catch (error) {
+            console.log(error);
         }
     };
 
     const handlevalidateContract = async () => {
-        try{
+        try {
             props.setLoading(true);
-            const tx = await props.validateContract(match.params.id);
+            await props.validateContract(match.params.id);
             props.setLoading(false);
-        }
-        catch(error){
+        } catch (error) {
             console.log(error);
-        }  
-    };      
+        }
+    };
 
     const handleRenewContract = async () => {
-        try{
+        try {
             props.setLoading(true);
             const timestamp = Date.parse(newExpiryTime);
-            const tx = await props.renewContract(match.params.id, timestamp);
+            await props.renewContract(match.params.id, timestamp);
             props.setLoading(false);
-        }
-        catch(error){
+        } catch (error) {
             console.log(error);
-        }  
-    };      
+        }
+    };
 
+    const getStatusInfo = (stage) => {
+        switch (stage) {
+            case '0': return { label: 'Pending Approval', dotClass: 'pending', badgeClass: 'gh-badge-yellow' };
+            case '1': return { label: 'Pending Validation', dotClass: 'pending', badgeClass: 'gh-badge-yellow' };
+            case '2': return { label: 'Active', dotClass: 'active', badgeClass: 'gh-badge-green' };
+            case '3': return { label: 'Expired', dotClass: 'expired', badgeClass: 'gh-badge-red' };
+            case '4': return { label: 'Rejected', dotClass: 'rejected', badgeClass: 'gh-badge-red' };
+            default: return { label: 'Unknown', dotClass: 'expired', badgeClass: 'gh-badge-yellow' };
+        }
+    };
 
-    return(
-        <React.Fragment>
-            {
-                contractDetails !== undefined ?
-                <React.Fragment>
-                    <br/>
-                    <div class="flex flex-row justify-center items-center">
-                        <h2 class="text-2xl font-semibold text-sky-900">Contract {match.params.id}</h2>
-                    </div>
-                    <br/><br/>
-                    <div class="flex flex-row h-full justify-center">
-                    <div style={{width: 800}} class="px-6 py-6 max-w-full mx-auto bg-slate-100 shadow-xl rounded-sm"> 
-                        <div class="flex flex-col justify-center">
-                            <div class="flex flex-row justify-center">
-                                <h1 class="text-4xl text-blue-900 font-semibold">{contractDetails.data.contractName}</h1>
-                            </div>
-                            <br/>
-                            {
-                                contractDetails.data.initiatingParty === props.account ?
-                                <h1 class="text-lg font-semibold">You have Initiated this Contract</h1>
-                                :
-                                <h1 class="text-lg font-semibold">Initiating Party: {contractDetails.data.initiatingParty}</h1>
-                            }
-                            <br/>
-                            <h1 class="text-xl font-semibold">Date of Expiration: {(new Date(parseInt(contractDetails.data.expiryTime.toString()))).toDateString()}</h1>
-                            <br/>
-                            <h1 class="text-xl font-semibold">Second Party</h1>
-                            {
-                                contractDetails.data.parties.map((party, key) => {
-                                    return(
-                                        <h1>{party}</h1>
-                                    );
-                                })
-                            }
-                            <br/>
-                            {
-                                contractDetails.data.isPayable === true ?
-                                <React.Fragment>
-                                    <h1 class="text-xl font-semibold">Funds Transfer Involved</h1>
-                                    {
-                                        contractDetails.data.fundDistribution.map((fund, key) => {
-                                            return(
-                                                <h1 class="text-lg">{ethers.utils.formatEther(fund)} DAI</h1>
-                                            );
-                                        })
-                                    }
-                                </React.Fragment>
-                                :
-                                <React.Fragment>
-                                    <h1 class="text-xl">Not a Payable Contract</h1>
-                                </React.Fragment>
-                            }
-                        </div>
-                        <br/>
-                        <div class="flex flex-wrap justify-center space-x-2">
-                            <a href={contractDetails.data.document} target="_blank" rel="noreferrer">
-                                <span class="px-4 py-2 rounded-full border border-gray-300 text-slate-900 font-semibold text-lg flex align-center w-max cursor-pointer bg-sky-400 hover:bg-sky-300">
-                                View Document
+    return (
+        <div className="gh-container-sm" style={{ paddingTop: '32px', paddingBottom: '64px' }}>
+            {contractDetails !== undefined ? (
+                <>
+                    {/* Page Header */}
+                    <div className="gh-page-header">
+                        <div>
+                            <h1 className="gh-page-title" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                {contractDetails.data.contractName}
+                                <span className={`gh-badge ${getStatusInfo(contractDetails.stage).badgeClass}`}>
+                                    {getStatusInfo(contractDetails.stage).label}
                                 </span>
-                            </a>
+                            </h1>
+                            <p className="gh-text-muted gh-mono" style={{ fontSize: '12px', marginTop: '4px' }}>
+                                {match.params.id}
+                            </p>
                         </div>
-                        <br/>
-                        {
-                            contractDetails.stage == 0 &&
-                            <React.Fragment>
-                                <div class="flex flex-col justify-center">
-                                    <div class="flex flex-row justify-center">
-                                        <h1 class="text-slate-800 text-xl mb-4">Current Status: Pending Approval from Parties</h1>
-                                    </div>
-                                    {
-                                        contractDetails.data.initiatingParty != props.account &&
-                                        <React.Fragment>
-                                        {
-                                            contractDetails.currentApproved ?
-                                            <div class="flex flex-row justify-center">
-                                                <h1 class="text-slate-800 text-lg">You have already approved this contract</h1>
+                    </div>
+
+                    {/* Details Card */}
+                    <div className="gh-card" style={{ marginBottom: '16px' }}>
+                        <div className="gh-detail-grid">
+                            <div>
+                                <div className="gh-detail-label">Initiating Party</div>
+                                <div className="gh-detail-value mono">
+                                    {contractDetails.data.initiatingParty === props.account
+                                        ? 'You'
+                                        : contractDetails.data.initiatingParty}
+                                </div>
+                            </div>
+                            <div>
+                                <div className="gh-detail-label">Expiration Date</div>
+                                <div className="gh-detail-value">
+                                    {(new Date(parseInt(contractDetails.data.expiryTime.toString()))).toDateString()}
+                                </div>
+                            </div>
+                            <div>
+                                <div className="gh-detail-label">Second Party</div>
+                                {contractDetails.data.parties.map((party, key) => (
+                                    <div className="gh-detail-value mono" key={key}>{party}</div>
+                                ))}
+                            </div>
+                            <div>
+                                <div className="gh-detail-label">Payment</div>
+                                {contractDetails.data.isPayable ? (
+                                    <>
+                                        {contractDetails.data.fundDistribution.map((fund, key) => (
+                                            <div className="gh-detail-value" key={key}>
+                                                {ethers.utils.formatEther(fund)} DAI
                                             </div>
-                                            :
-                                            <div class="flex flex-row justify-center my-5">
-                                                <button class="py-2 px-6 mx-3 bg-emerald-500 hover:bg-emerald-400 rounded-md text-white" onClick={handleapproveContract}>Sign and Approve Contract </button>
-                                                <button class="py-2 px-6 mx-3 bg-red-500 hover:bg-red-400 rounded-md text-white" onClick={handlerejectContract}>Reject Contract </button>
-                                            </div>
-                                        }
-                                        </React.Fragment>
-                                    }
-                                </div>
-                            </React.Fragment>
-                        }
-                        {
-                            contractDetails.stage == 1 &&
-                            <React.Fragment>
-                                <div class="flex flex-row justify-center">
-                                    <div class="flex flex-col justify-center">
-                                        <h1 class="text-slate-800 text-lg font-semibold mb-4">Current Status: Pending Final Approval from the Initiating Party</h1>
-                                        {
-                                            contractDetails.data.initiatingParty == props.account &&
-                                            <button class="py-2 px-6 bg-blue-500 hover:bg-blue-400 rounded-md text-white" onClick={handlevalidateContract}>Sign and Validate Contract</button>
-                                            
-                                        }
-                                    </div>
-                                </div>
-                            </React.Fragment>
-                        }
-                        {
-                            contractDetails.stage == 2 &&
-                            <React.Fragment>
-                                <div class="flex flex-row justify-center">
-                                    <div class="flex flex-col justify-center">
-                                    <h1 class="text-slate-800 text-xl font-semibold mb-4">Current Status: <span class="text-green-800">Active Contract</span></h1>
-                                        <h1 class="text-lg">Contract has been approved by the parties and succesfully validated</h1>
-                                    </div>
-                                </div>
-                            </React.Fragment>
-                        }
-                        {
-                            contractDetails.stage == 3 &&
-                            <React.Fragment>
-                                <div class="flex flex-row justify-center">
-                                    <div class="flex flex-col justify-center items-center">
-                                        <h1 class="text-slate-800 text-lg font-semibold mb-4">!!! This Contract has Expired</h1>
-                                    {
-                                        contractDetails.data.initiatingParty == props.account &&
-                                        <div class="flex flex-col item-center justify-center">
-                                            <label for="et-field" class="rounded-md border text-lg border-gray-200 p-3 focus:outline-none w-full">Choose New Contract Expiration Date</label>
-                                            <DatePicker i="et-field" minDate={new Date()} value={newExpiryTime} onChange={(value) => {setNewExpiryTime(value)}} required />
-                                            <button class="py-2 px-6 bg-blue-500 hover:bg-blue-400 rounded-md text-white mt-5" onClick={handleRenewContract}>Renew Contract</button>
+                                        ))}
+                                    </>
+                                ) : (
+                                    <div className="gh-detail-value gh-text-muted">Non-payable</div>
+                                )}
+                            </div>
+                        </div>
+
+                        <hr className="gh-divider" />
+
+                        {/* View Document */}
+                        <a href={contractDetails.data.document} target="_blank" rel="noreferrer" className="gh-btn">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M3.75 2A1.75 1.75 0 002 3.75v8.5c0 .966.784 1.75 1.75 1.75h8.5A1.75 1.75 0 0014 12.25v-8.5A1.75 1.75 0 0012.25 2h-8.5zM3.5 3.75a.25.25 0 01.25-.25h8.5a.25.25 0 01.25.25v8.5a.25.25 0 01-.25.25h-8.5a.25.25 0 01-.25-.25v-8.5z" />
+                                <path d="M10 8L6.5 10.5v-5L10 8z" />
+                            </svg>
+                            View Document
+                        </a>
+                    </div>
+
+                    {/* Stage 0: Pending Approval */}
+                    {contractDetails.stage === '0' && (
+                        <div className="gh-card">
+                            <div className="gh-status" style={{ marginBottom: '12px' }}>
+                                <span className="gh-status-dot pending"></span>
+                                Pending approval from all parties
+                            </div>
+                            {contractDetails.data.initiatingParty !== props.account && (
+                                <>
+                                    {contractDetails.currentApproved ? (
+                                        <div className="gh-alert gh-alert-success">
+                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                                <path fillRule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z" />
+                                            </svg>
+                                            You have already approved this contract
                                         </div>
-                                    }
+                                    ) : (
+                                        <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+                                            <button className="gh-btn gh-btn-primary" onClick={handleapproveContract}>
+                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                                    <path fillRule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z" />
+                                                </svg>
+                                                Sign &amp; Approve
+                                            </button>
+                                            <button className="gh-btn gh-btn-danger" onClick={handlerejectContract}>
+                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                                    <path fillRule="evenodd" d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z" />
+                                                </svg>
+                                                Reject
+                                            </button>
+                                        </div>
+                                    )}
+                                </>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Stage 1: Pending Final Approval */}
+                    {contractDetails.stage === '1' && (
+                        <div className="gh-card">
+                            <div className="gh-status" style={{ marginBottom: '12px' }}>
+                                <span className="gh-status-dot pending"></span>
+                                Pending final approval from the initiating party
+                            </div>
+                            {contractDetails.data.initiatingParty === props.account && (
+                                <button className="gh-btn gh-btn-primary" style={{ marginTop: '8px' }} onClick={handlevalidateContract}>
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                        <path fillRule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z" />
+                                    </svg>
+                                    Sign &amp; Validate Contract
+                                </button>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Stage 2: Active */}
+                    {contractDetails.stage === '2' && (
+                        <div className="gh-card">
+                            <div className="gh-alert gh-alert-success">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                    <path fillRule="evenodd" d="M8 16A8 8 0 108 0a8 8 0 000 16zm3.78-9.72a.75.75 0 00-1.06-1.06L7 8.94 5.28 7.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.06 0l4.25-4.25z" />
+                                </svg>
+                                This contract is active — approved by all parties and successfully validated.
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Stage 3: Expired */}
+                    {contractDetails.stage === '3' && (
+                        <div className="gh-card">
+                            <div className="gh-alert gh-alert-warning" style={{ marginBottom: '16px' }}>
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                    <path fillRule="evenodd" d="M8.22 1.754a.25.25 0 00-.44 0L1.698 13.132a.25.25 0 00.22.368h12.164a.25.25 0 00.22-.368L8.22 1.754z" />
+                                </svg>
+                                This contract has expired
+                            </div>
+                            {contractDetails.data.initiatingParty === props.account && (
+                                <div>
+                                    <label className="gh-label">Choose New Expiration Date</label>
+                                    <div style={{ marginBottom: '12px' }}>
+                                        <DatePicker minDate={new Date()} value={newExpiryTime} onChange={(value) => setNewExpiryTime(value)} required />
                                     </div>
-                                    <br/><br/>
+                                    <button className="gh-btn gh-btn-primary" onClick={handleRenewContract}>
+                                        Renew Contract
+                                    </button>
                                 </div>
-                            </React.Fragment>
-                        }
-                        {
-                            contractDetails.stage == 4 &&
-                            <React.Fragment>
-                                <div class="flex flex-row justify-center">
-                                    <div class="flex flex-col justify-center">
-                                        <h1 class="text-red-600 text-lg font-semibold mb-4">This Contract has been rejected by the parties</h1>
-                                    </div>
-                                </div>
-                            </React.Fragment>
-                        }
-                    </div>
-                    </div>
-                </React.Fragment>
-                :
-                <React.Fragment>
-                    <div class="flex flex-row justify-center items-center">
-                        <h2 class="text-4xl font-bold text-sky-900">Invalid Contract</h2>
-                    </div>
-                </React.Fragment>
-            }
-        </React.Fragment>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Stage 4: Rejected */}
+                    {contractDetails.stage === '4' && (
+                        <div className="gh-card">
+                            <div className="gh-alert gh-alert-danger">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                    <path fillRule="evenodd" d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z" />
+                                </svg>
+                                This contract has been rejected by the parties.
+                            </div>
+                        </div>
+                    )}
+
+                </>
+            ) : (
+                <div className="gh-empty-state">
+                    <h3>Loading contract...</h3>
+                    <p className="gh-text-muted">Fetching data from the blockchain</p>
+                </div>
+            )}
+        </div>
     );
-};
+}

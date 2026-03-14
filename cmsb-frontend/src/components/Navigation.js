@@ -1,44 +1,43 @@
 import React from 'react';
 
-export default function Navigation (props) {
-
+export default function Navigation(props) {
     return (
-        <header>
-            <nav className='flex items-center justify-between p-2 container mx-auto bg-slate-100'>
-            <div class="text-lg text-gray-600 hidden lg:flex">
-                <a href="/" class="block mt-4 lg:inline-block text-cyan-800 font-bold lg:mt-0 mr-10">
-                    Home
+        <nav className="gh-nav">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
+                <a href="/" className="gh-nav-brand">
+                    {/* GitHub-style octicon placeholder */}
+                    <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    CMSB
                 </a>
-                <a href="/initiation" class="block mt-4 lg:inline-block hover:text-gray-700 lg:mt-0 mr-10">
-                    Initiate New Contract
-                </a>
-                <a href="/contracts" class="block mt-4 lg:inline-block hover:text-gray-700 lg:mt-0 mr-10">
-                    View Your Contracts
-                </a>
+                <div className="gh-nav-links">
+                    <a href="/">Home</a>
+                    <a href="/initiation">Initiate</a>
+                    <a href="/contracts">Contracts</a>
+                </div>
             </div>
-            <div class="flex items-center">
-            {
-                props.account === undefined ?
-                <div class="mr-5 lg:mr-0">
-                    <button class="py-2 px-6 bg-teal-500 hover:bg-teal-600 rounded-md text-white text-md" onClick={props.connectWallet}>Connect Wallet</button>
-                </div>
-                :
-                <div class="mr-5 lg:mr-0">
-                    <button class="py-2 px-6 rounded-md text-black-600 hover:text-gray-700 text-lg">{ props.account.substring(0, 15) }{ props.account.length >= 10 && `.....` }</button>
-                    <button class="py-2 px-6 bg-red-500 hover:bg-red-600 rounded-md text-white text-md" onClick={props.disconnectWallet}>Disconnect Wallet</button>
-                </div>
-            }
-                <div class="block lg:hidden">
-                    <button
-                        class="flex items-center px-4 py-3 border rounded text-teal-500 border-teal-500 focus:outline-none">
-                        <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <title>Menu</title>
-                            <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
+
+            <div className="gh-nav-actions">
+                {props.account === undefined ? (
+                    <button className="gh-btn gh-btn-primary" onClick={props.connectWallet}>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M14 3H2a1 1 0 00-1 1v8a1 1 0 001 1h12a1 1 0 001-1V4a1 1 0 00-1-1zm-1 7h-2a1 1 0 010-2h2a1 1 0 010 2z" />
                         </svg>
+                        Connect Wallet
                     </button>
-                </div>
+                ) : (
+                    <>
+                        <div className="gh-account-pill">
+                            <span className="gh-account-dot"></span>
+                            {props.account.substring(0, 6)}...{props.account.substring(props.account.length - 4)}
+                        </div>
+                        <button className="gh-btn gh-btn-danger gh-btn-sm" onClick={props.disconnectWallet}>
+                            Disconnect
+                        </button>
+                    </>
+                )}
             </div>
-            </nav>
-        </header>
+        </nav>
     );
-};
+}

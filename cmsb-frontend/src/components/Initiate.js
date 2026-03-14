@@ -1,223 +1,229 @@
 import React, { useState, useEffect } from 'react';
-import DatePicker from 'react-date-picker'; 
-import { create } from 'ipfs-http-client';
+import DatePicker from 'react-date-picker';
+import { uploadToIPFS } from './utils/pinata';
 import { ethers } from 'ethers';
-
-const client = create('https://ipfs.infura.io:5001/api/v0');
 
 export default function Initiate(props) {
 
-    const [message, setMessage] = useState('');
-    const [isPayable, setIsPayable] = useState(false);
-    const [expiryTime, setExpiryTime] = useState(new Date());
-    const [party, setParty] = useState('');
-    const [fund, setFund] = useState(0);
-    // const [parties, setParties] = useState([]);
-    // const [fundDistribution, setFundDistribution] = useState([]);
-    const [contractName, setContractName] = useState('');
-    const [selectedFile, setSelectedFile] = useState();
-    const [daiBalance, setDAIBalance] = useState(0);
+  const [message, setMessage] = useState('');
+  const [isPayable, setIsPayable] = useState(false);
+  const [expiryTime, setExpiryTime] = useState(new Date());
+  const [party, setParty] = useState('');
+  const [fund, setFund] = useState(0);
+  const [contractName, setContractName] = useState('');
+  const [selectedFile, setSelectedFile] = useState();
+  const [daiBalance, setDAIBalance] = useState(0);
 
-    const handleSubmit = async (event) => {
-      event.preventDefault();
-      const timestamp = Date.parse(expiryTime);
-      try {
-        props.setLoading(true);
-        const added = await client.add(selectedFile);
-        const pathUrl = `https://ipfs.infura.io/ipfs/${added.path}`;
-        const contractData = {
-          isPayable: isPayable,
-          expiryTime: timestamp,
-          fundDistribution: [fund],
-          initiatingParty: props.account,
-          parties: [party],
-          contractName: contractName,
-          document: pathUrl
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const timestamp = Date.parse(expiryTime);
+    try {
+      props.setLoading(true);
+      let pathUrl = "local://no-document";
+
+      // Upload document to IPFS via Pinata
+      if (selectedFile) {
+        const result = await uploadToIPFS(selectedFile);
+        if (result.success) {
+          pathUrl = result.url;
+        } else {
+          console.warn("IPFS upload issue:", result.error);
+          pathUrl = result.url; // Falls back to local://filename
         }
-        const txStatus = await props.initiateNewContract(contractData);
-        if (txStatus) {
-          window.location.href="/contracts";
-        }
-      } catch(error) {
-        console.log("Error:", error);
       }
-      props.setLoading(false);
+      const contractData = {
+        isPayable: isPayable,
+        expiryTime: timestamp,
+        fundDistribution: [fund],
+        initiatingParty: props.account,
+        parties: [party],
+        contractName: contractName,
+        document: pathUrl
+      }
+      const txStatus = await props.initiateNewContract(contractData);
+      if (txStatus) {
+        window.location.href = "/contracts";
+      }
+    } catch (error) {
+      console.log("Error:", error);
     }
+    props.setLoading(false);
+  }
 
-    useEffect(() => {
-      async function fetchData() {
-        const daiBalance = await props.getDAIBalance();
-        setDAIBalance(daiBalance.toString());
-      }
+  useEffect(() => {
+    async function fetchData() {
+      const daiBalance = await props.getDAIBalance();
+      setDAIBalance(daiBalance.toString());
+    }
+    fetchData();
+  }, []);
 
-      fetchData();
-    }, []);
+  return (
+    <div className="gh-container-sm" style={{ paddingTop: '32px', paddingBottom: '64px' }}>
 
-    return(
-      <React.Fragment>
-        <div class="h-20 flex flex-row justify-center items-center">
-          <h1 class="text-4xl font-semibold text-sky-900">New Contract Initiation</h1>
-        </div>
-        <br/>
-        {
-          message !== '' &&
-          <div class="flex flex-row justify-center items-center max-w-screen px-16">
-            <div class="bg-yellow-100 py-5 h-12 px-6 mb-3 text-base text-yellow-700 inline-flex items-center w-full" role="alert">
-              <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="exclamation-triangle" class="w-4 h-4 mr-2 fill-current" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                <path fill="currentColor" d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"></path>
-              </svg>
-              {message}
-            </div>
-          </div>
-        }
-        <br/>
-        <div class="flex flex-row min-h-screen justify-center items-center">
-          <br/><br/>
-          <div style={{width: 600}}>
-            <form onSubmit={handleSubmit} class="bg-gray-100 shadow-xl rounded-md p-8">
-              <div class="mb-5">
-                  <br/>
-                  <label for="contract-name-field" class="mb-3 block text-gray-700 text-xl">Contract Name</label>
-                  <input 
-                    type="text" 
-                    class="bg-white rounded-md border border-gray-200 p-3 focus:outline-none w-full" 
-                    id="contract-name-field"
-                    value={contractName} 
-                    onChange={(e) => setContractName(e.target.value)}
-                    placeholder="Enter the name of the contract/agreement" 
-                    required 
-                  />
-              </div>
-              <br/>
-
-              <div class="flex flex-row item-center justify-center">
-                <input 
-                  class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" 
-                  type="checkbox" 
-                  value={isPayable} 
-                  id="payable-check" 
-                  onChange={(e) => {setIsPayable(!isPayable)}}
-                />
-                <label class="form-check-label inline-block text-gray-800 text-lg" for="payable-check">
-                  Payable Contract
-                </label>
-              </div>
-              <br/>
-
-              <div class="mb-3">
-                <br/>
-                <label for="parties-field" class="mb-3 block text-gray-700 text-xl">Party Address</label>
-                <input 
-                  type="text" 
-                  class="bg-white rounded-md border border-gray-200 p-3 focus:outline-none w-full" 
-                  id="parties-field" 
-                  value={party} 
-                  onChange={(e) => {
-                    setParty(e.target.value);
-                    if (!ethers.utils.isAddress(e.target.value)) {
-                      setMessage("Invalid party address");
-                    } else {
-                      setMessage('');
-                    }
-                     /*setParties([...parties, e.target.value])*/
-                  }}
-                  placeholder="Enter the address of the second party" 
-                  required 
-                />
-              </div>
-              <br/>
-
-              { isPayable &&
-                <React.Fragment>
-                <div class="mb-3">
-                  <div class="flex flex-row justify-center">
-                    <h1>Your DAI Token Balance: {daiBalance}</h1>
-                  </div>
-                  <br/><br/>
-                  <label for="funds-field" class="mb-3 block text-gray-700 text-xl">Fund Transfer</label>
-                  <input 
-                    type="text" 
-                    class="bg-white rounded-md border border-gray-200 p-3 focus:outline-none w-full" 
-                    id="funds-field" 
-                    value={fund} 
-                    onChange={(e) => {
-                      setFund(e.target.value);
-                      if (!isNaN(e.target.value) || e.target.value === 0) {
-                        if (e.target.value > daiBalance) {
-                          setMessage('You do not have sufficient DAI balance');
-                        } else {
-                          setMessage('');
-                        }
-                      } else {
-                        setMessage('Invalid amount or text entered');
-                      }
-                       /*setFundDistribution(e.target.value)*/
-                    }}
-                    placeholder="Enter the amount to be transferred to the Party (in USD)" 
-                    required 
-                  />
-                </div>
-                <br/>
-                </React.Fragment>
-              }
-
-              <div class="flex flex-row item-center justify-center">
-                <label for="et-field" class="rounded-md border text-lg border-gray-200 p-3 focus:outline-none w-full">Choose Contract Expiration Date</label>
-                <DatePicker i="et-field" minDate={new Date()} value={expiryTime} onChange={(value) => {setExpiryTime(value)}} required />
-              </div>
-              <br/><br/>
-
-              <div class="flex justify-center">
-                <div class="mb-3 w-96">
-                  <label for="formFile" class="form-label inline-block mb-2 text-gray-700 text-lg">Upload Contract Document (pdf)</label>
-                  <input 
-                    class="form-control
-                    block
-                    w-full
-                    px-3
-                    py-1.5
-                    text-base
-                    font-normal
-                    text-gray-700
-                    bg-white bg-clip-padding
-                    border border-solid border-gray-300
-                    rounded
-                    transition
-                    ease-in-out
-                    m-0
-                    focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" 
-                    type="file" 
-                    id="formFile"
-                    onChange={(e) => {
-                      if (e.target.files[0].type === 'application/pdf') {
-                        setSelectedFile(e.target.files[0]);
-                        setMessage('');
-                      } else {
-                        setMessage('Invalid file type, please upload a pdf file');
-                      }
-                    }} 
-                    required
-                  />
-                </div>
-              </div>
-              <br/>
-              <div class="flex flex-row item-center justify-center">
-                {
-                  isPayable &&
-                  <React.Fragment>
-                    <h1>Note: Payable Contracts will have 2 stages of Confirmation - Approval and Initiation</h1>
-                    <br/><br/>
-                  </React.Fragment>
-                }
-              </div>
-              <div class="flex flex-row item-center justify-center">
-                <button type="submit" class="relative py-3 px-12 bg-sky-600 hover:bg-sky-700 mr-5 rounded-md text-white text-lg focus:outline-none w-half disabled:opacity-10" disabled={message !== '' ? true : false}>Initiate New Contract</button>
-              </div>
-              <br/>
-            </form>
-            <br/><br/>
-          </div>
+      {/* Page Header */}
+      <div className="gh-page-header">
+        <h1 className="gh-page-title">New Contract Initiation</h1>
       </div>
-      </React.Fragment>
-    );
+
+      {/* Warning Alert */}
+      {message !== '' && (
+        <div className="gh-alert gh-alert-warning" style={{ marginBottom: '16px' }}>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path fillRule="evenodd" d="M8.22 1.754a.25.25 0 00-.44 0L1.698 13.132a.25.25 0 00.22.368h12.164a.25.25 0 00.22-.368L8.22 1.754zm-1.763-.707c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0114.082 15H1.918a1.75 1.75 0 01-1.543-2.575L6.457 1.047zM9 11a1 1 0 11-2 0 1 1 0 012 0zm-.25-5.25a.75.75 0 00-1.5 0v2.5a.75.75 0 001.5 0v-2.5z" />
+          </svg>
+          {message}
+        </div>
+      )}
+
+      {/* Form Card */}
+      <div className="gh-card">
+        <form onSubmit={handleSubmit}>
+
+          {/* Contract Name */}
+          <div style={{ marginBottom: '20px' }}>
+            <label className="gh-label" htmlFor="contract-name-field">Contract Name</label>
+            <input
+              type="text"
+              className="gh-input"
+              id="contract-name-field"
+              value={contractName}
+              onChange={(e) => setContractName(e.target.value)}
+              placeholder="Enter the name of the contract/agreement"
+              required
+            />
+          </div>
+
+          {/* Payable Checkbox */}
+          <div style={{ marginBottom: '20px' }}>
+            <label className="gh-checkbox">
+              <input
+                type="checkbox"
+                checked={isPayable}
+                id="payable-check"
+                onChange={() => setIsPayable(!isPayable)}
+              />
+              Payable Contract
+            </label>
+            <p className="gh-input-hint">Enable if this contract involves DAI token transfers</p>
+          </div>
+
+          <hr className="gh-divider" />
+
+          {/* Party Address */}
+          <div style={{ marginBottom: '20px' }}>
+            <label className="gh-label" htmlFor="parties-field">Party Address</label>
+            <input
+              type="text"
+              className="gh-input gh-mono"
+              id="parties-field"
+              value={party}
+              onChange={(e) => {
+                setParty(e.target.value);
+                if (!ethers.utils.isAddress(e.target.value)) {
+                  setMessage("Invalid party address");
+                } else {
+                  setMessage('');
+                }
+              }}
+              placeholder="0x..."
+              required
+            />
+            <p className="gh-input-hint">Ethereum address of the second party</p>
+          </div>
+
+          {/* Fund Distribution (if payable) */}
+          {isPayable && (
+            <>
+              <div style={{ marginBottom: '8px', padding: '12px 16px', background: 'rgba(88, 166, 255, 0.08)', borderRadius: '6px', border: '1px solid rgba(88, 166, 255, 0.2)' }}>
+                <span style={{ fontSize: '13px', color: 'var(--color-accent-fg)' }}>
+                  💰 Your DAI Balance: <strong>{daiBalance}</strong>
+                </span>
+              </div>
+              <div style={{ marginBottom: '20px', marginTop: '12px' }}>
+                <label className="gh-label" htmlFor="funds-field">Fund Transfer Amount</label>
+                <input
+                  type="text"
+                  className="gh-input"
+                  id="funds-field"
+                  value={fund}
+                  onChange={(e) => {
+                    setFund(e.target.value);
+                    if (!isNaN(e.target.value) || e.target.value === 0) {
+                      if (e.target.value > daiBalance) {
+                        setMessage('You do not have sufficient DAI balance');
+                      } else {
+                        setMessage('');
+                      }
+                    } else {
+                      setMessage('Invalid amount or text entered');
+                    }
+                  }}
+                  placeholder="Amount in DAI (e.g. 100)"
+                  required
+                />
+              </div>
+            </>
+          )}
+
+          <hr className="gh-divider" />
+
+          {/* Expiration Date */}
+          <div style={{ marginBottom: '20px' }}>
+            <label className="gh-label">Contract Expiration Date</label>
+            <DatePicker
+              minDate={new Date()}
+              value={expiryTime}
+              onChange={(value) => setExpiryTime(value)}
+              required
+            />
+          </div>
+
+          {/* File Upload */}
+          <div style={{ marginBottom: '20px' }}>
+            <label className="gh-label" htmlFor="formFile">Contract Document (PDF)</label>
+            <input
+              className="gh-file-input"
+              type="file"
+              id="formFile"
+              onChange={(e) => {
+                if (e.target.files[0] && e.target.files[0].type === 'application/pdf') {
+                  setSelectedFile(e.target.files[0]);
+                  setMessage('');
+                } else if (e.target.files[0]) {
+                  setMessage('Invalid file type, please upload a pdf file');
+                }
+              }}
+            />
+            <p className="gh-input-hint">Optional — upload the contract document as PDF</p>
+          </div>
+
+          {isPayable && (
+            <div className="gh-alert gh-alert-warning" style={{ marginBottom: '20px' }}>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path fillRule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z" />
+              </svg>
+              Payable contracts require 2 confirmations: Approval + Initiation
+            </div>
+          )}
+
+          <hr className="gh-divider" />
+
+          {/* Submit */}
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <button
+              type="submit"
+              className="gh-btn gh-btn-primary gh-btn-lg"
+              disabled={message !== ''}
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path fillRule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z" />
+              </svg>
+              Initiate Contract
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 }

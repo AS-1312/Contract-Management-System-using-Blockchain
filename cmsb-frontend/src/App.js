@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import { HalfCircleSpinner } from 'react-epic-spinners';
 
 import Home from './components/Home';
 import Navigation from './components/Navigation';
@@ -23,13 +22,13 @@ import useMetaMask from './hooks/metamask';
 
 function App() {
 
-  const { 
+  const {
     isActive,
     account,
     isLoading,
     connect,
     disconnect,
-    library 
+    library
   } = useMetaMask();
 
   const [loading, setLoading] = useState(false);
@@ -38,10 +37,13 @@ function App() {
     await connect();
     if (isActive || typeof window.ethereum !== 'undefined') {
       if (library !== undefined) {
-        if (await library.eth.net.getId() === 80001) {
+        const networkId = await library.eth.net.getId();
+        // Supported: Mumbai(80001), Amoy(80002), Sepolia(11155111), Local Ganache(1337+)
+        const supportedNetworks = [80001, 80002, 11155111, 1337];
+        if (supportedNetworks.includes(networkId) || networkId > 1000000000000) {
           await loadProviderAndBlockchainData();
         } else {
-          window.alert("Please change the network to Mumbai Test Network");
+          window.alert("Please switch to a supported network: Polygon Amoy, Sepolia, or Localhost");
         }
       }
     } else {
@@ -57,7 +59,7 @@ function App() {
   useEffect(() => {
     setLoading(true);
     window.addEventListener('Web3ReactUpdate', handleChange);
-    
+
     async function fetchData() {
       await connectWallet();
     }
@@ -71,66 +73,67 @@ function App() {
   }, []);
 
   if (loading || isLoading) {
-    return(
-      <div class="flex flex-row min-h-screen justify-center items-center">
-        <HalfCircleSpinner size="100" color="blue" />
+    return (
+      <div className="gh-loading">
+        <div className="gh-spinner"></div>
+        <span className="gh-text-muted">Connecting to blockchain...</span>
       </div>
     );
   } else {
     return (
       <React.Fragment>
-        { isActive !== true ?
-        <React.Fragment>
-          <Navigation 
-            isActive={isActive}
-            account={account}
-            connectWallet={connectWallet}
-            disconnectWallet={disconnect}
-          />
-          <Home />
-        </React.Fragment>
-        :
-        <React.Fragment>
-          <BrowserRouter>
-            <Navigation 
+        {isActive !== true ?
+          <React.Fragment>
+            <Navigation
               isActive={isActive}
               account={account}
               connectWallet={connectWallet}
               disconnectWallet={disconnect}
             />
-            <Switch>
-              <Route exact path="/" component={Home} />
-              <Route exact path="/initiation">
-                <Initiate 
-                  account={account}
-                  setLoading={setLoading}
-                  getDAIBalance={getDAIBalance}
-                  initiateNewContract={initiateNewContract}
-                />
-              </Route>
-              <Route exact path="/contracts">
-                <Contracts 
-                  account={account}
-                  setLoading={setLoading}
-                  getMyContracts={getMyContracts}
-                />
-              </Route>
-              <Route exact path="/contract/:id">
-                <Contract 
-                  account={account}
-                  setLoading={setLoading}
-                  getMyContracts={getMyContracts}
-                  getContractDetails={getContractDetails}
-                  approveContract={approveContract}
-                  rejectContract={rejectContract}
-                  validateContract={validateContract}
-                  renewContract={renewContract}
-                />
-              </Route>
-            </Switch>
-          </BrowserRouter>
-        </React.Fragment>
-      }
+            <Home />
+          </React.Fragment>
+          :
+          <React.Fragment>
+            <BrowserRouter>
+              <Navigation
+                isActive={isActive}
+                account={account}
+                connectWallet={connectWallet}
+                disconnectWallet={disconnect}
+              />
+              <Switch>
+                <Route exact path="/" component={Home} />
+                <Route exact path="/initiation">
+                  <Initiate
+                    account={account}
+                    setLoading={setLoading}
+                    getDAIBalance={getDAIBalance}
+                    initiateNewContract={initiateNewContract}
+                  />
+                </Route>
+                <Route exact path="/contracts">
+                  <Contracts
+                    account={account}
+                    setLoading={setLoading}
+                    getMyContracts={getMyContracts}
+                  />
+                </Route>
+                <Route exact path="/contract/:id">
+                  <Contract
+                    account={account}
+                    setLoading={setLoading}
+                    getMyContracts={getMyContracts}
+                    getContractDetails={getContractDetails}
+                    approveContract={approveContract}
+                    rejectContract={rejectContract}
+                    validateContract={validateContract}
+                    renewContract={renewContract}
+                  />
+                </Route>
+              </Switch>
+            </BrowserRouter>
+          </React.Fragment>
+        }
       </React.Fragment>
     );
   }

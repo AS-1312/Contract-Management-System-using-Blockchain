@@ -2,16 +2,810 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================
+   GitHub-Inspired Dark Theme — Design Tokens
+   ============================================ */
+
+:root {
+  /* Canvas / Background */
+  --color-canvas-default: #0d1117;
+  --color-canvas-subtle: #161b22;
+  --color-canvas-inset: #010409;
+
+  /* Borders */
+  --color-border-default: #30363d;
+  --color-border-muted: #21262d;
+
+  /* Text */
+  --color-fg-default: #e6edf3;
+  --color-fg-muted: #8b949e;
+  --color-fg-subtle: #6e7681;
+
+  /* Accent */
+  --color-accent-fg: #58a6ff;
+  --color-accent-emphasis: #1f6feb;
+
+  /* Success */
+  --color-success-fg: #3fb950;
+  --color-success-emphasis: #238636;
+
+  /* Danger */
+  --color-danger-fg: #f85149;
+  --color-danger-emphasis: #da3633;
+
+  /* Warning */
+  --color-warning-fg: #d29922;
+  --color-warning-emphasis: #9e6a03;
+
+  /* Done / Purple */
+  --color-done-fg: #a371f7;
+
+  /* Btn */
+  --color-btn-bg: #21262d;
+  --color-btn-border: #363b42;
+  --color-btn-hover-bg: #30363d;
+  --color-btn-primary-bg: #238636;
+  --color-btn-primary-hover-bg: #2ea043;
+  --color-btn-danger-bg: #da3633;
+  --color-btn-danger-hover-bg: #b62324;
+
+  /* Spacing & Radius */
+  --radius-md: 6px;
+  --radius-lg: 12px;
+}
+
+/* ============================================
+   Global Resets & Base
+   ============================================ */
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans',
+    Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-fg-default);
+  background-color: var(--color-canvas-default);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+a {
+  color: var(--color-accent-fg);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 12px;
+  background: var(--color-canvas-subtle);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* ============================================
+   Scrollbar (matches GitHub dark)
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-canvas-default);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-default);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-fg-subtle);
+}
+
+/* ============================================
+   Navigation
+   ============================================ */
+
+.gh-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: var(--color-canvas-subtle);
+  border-bottom: 1px solid var(--color-border-default);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.gh-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.gh-nav-links a {
+  color: var(--color-fg-default);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 6px 16px;
+  border-radius: var(--radius-md);
+  transition: background 0.15s ease, color 0.15s ease;
+  text-decoration: none;
+}
+
+.gh-nav-links a:hover {
+  background: var(--color-btn-hover-bg);
+  color: var(--color-fg-default);
+  text-decoration: none;
+}
+
+.gh-nav-links a.active {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.gh-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-fg-default);
+  text-decoration: none;
+}
+
+.gh-nav-brand svg {
+  fill: var(--color-fg-default);
+}
+
+.gh-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ============================================
+   Buttons
+   ============================================ */
+
+.gh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  line-height: 20px;
+  white-space: nowrap;
+  border: 1px solid var(--color-btn-border);
+  border-radius: var(--radius-md);
+  background: var(--color-btn-bg);
+  color: var(--color-fg-default);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  text-decoration: none;
+}
+
+.gh-btn:hover {
+  background: var(--color-btn-hover-bg);
+  border-color: var(--color-fg-subtle);
+  text-decoration: none;
+}
+
+.gh-btn-primary {
+  background: var(--color-btn-primary-bg);
+  border-color: rgba(240, 246, 252, 0.1);
+  color: #ffffff;
+}
+
+.gh-btn-primary:hover {
+  background: var(--color-btn-primary-hover-bg);
+}
+
+.gh-btn-primary:disabled {
+  background: #1a4023;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+  border-color: rgba(240, 246, 252, 0.1);
+}
+
+.gh-btn-danger {
+  background: transparent;
+  border-color: var(--color-btn-border);
+  color: var(--color-danger-fg);
+}
+
+.gh-btn-danger:hover {
+  background: var(--color-btn-danger-bg);
+  border-color: var(--color-btn-danger-bg);
+  color: #ffffff;
+}
+
+.gh-btn-sm {
+  padding: 3px 12px;
+  font-size: 12px;
+}
+
+.gh-btn-lg {
+  padding: 9px 24px;
+  font-size: 16px;
+}
+
+/* ============================================
+   Cards / Containers
+   ============================================ */
+
+.gh-card {
+  background: var(--color-canvas-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  padding: 24px;
+}
+
+.gh-card-hover {
+  transition: border-color 0.2s ease, transform 0.15s ease;
+}
+
+.gh-card-hover:hover {
+  border-color: var(--color-fg-subtle);
+  transform: translateY(-1px);
+}
+
+/* ============================================
+   Form Controls
+   ============================================ */
+
+.gh-input {
+  width: 100%;
+  padding: 5px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  line-height: 20px;
+  color: var(--color-fg-default);
+  background: var(--color-canvas-default);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.gh-input:focus {
+  border-color: var(--color-accent-fg);
+  box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.3);
+}
+
+.gh-input::placeholder {
+  color: var(--color-fg-subtle);
+}
+
+.gh-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-fg-default);
+  margin-bottom: 8px;
+}
+
+.gh-input-hint {
+  font-size: 12px;
+  color: var(--color-fg-muted);
+  margin-top: 4px;
+}
+
+.gh-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--color-fg-default);
+}
+
+.gh-checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-accent-emphasis);
+  cursor: pointer;
+}
+
+.gh-file-input {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--color-fg-muted);
+  background: var(--color-canvas-default);
+  border: 1px dashed var(--color-border-default);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.gh-file-input:hover {
+  border-color: var(--color-fg-subtle);
+}
+
+/* ============================================
+   Alerts / Flash Messages
+   ============================================ */
+
+.gh-alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  border: 1px solid;
+}
+
+.gh-alert-warning {
+  background: rgba(210, 153, 34, 0.1);
+  border-color: rgba(210, 153, 34, 0.4);
+  color: var(--color-warning-fg);
+}
+
+.gh-alert-danger {
+  background: rgba(248, 81, 73, 0.1);
+  border-color: rgba(248, 81, 73, 0.4);
+  color: var(--color-danger-fg);
+}
+
+.gh-alert-success {
+  background: rgba(63, 185, 80, 0.1);
+  border-color: rgba(63, 185, 80, 0.4);
+  color: var(--color-success-fg);
+}
+
+/* ============================================
+   Badges / Labels
+   ============================================ */
+
+.gh-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+
+.gh-badge-green {
+  background: rgba(63, 185, 80, 0.15);
+  border-color: rgba(63, 185, 80, 0.4);
+  color: var(--color-success-fg);
+}
+
+.gh-badge-yellow {
+  background: rgba(210, 153, 34, 0.15);
+  border-color: rgba(210, 153, 34, 0.4);
+  color: var(--color-warning-fg);
+}
+
+.gh-badge-red {
+  background: rgba(248, 81, 73, 0.15);
+  border-color: rgba(248, 81, 73, 0.4);
+  color: var(--color-danger-fg);
+}
+
+.gh-badge-blue {
+  background: rgba(88, 166, 255, 0.15);
+  border-color: rgba(88, 166, 255, 0.4);
+  color: var(--color-accent-fg);
+}
+
+.gh-badge-purple {
+  background: rgba(163, 113, 247, 0.15);
+  border-color: rgba(163, 113, 247, 0.4);
+  color: var(--color-done-fg);
+}
+
+/* ============================================
+   Page Layout Utils
+   ============================================ */
+
+.gh-container {
+  max-width: 1012px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.gh-container-sm {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.gh-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 0 16px;
+  border-bottom: 1px solid var(--color-border-default);
+  margin-bottom: 24px;
+}
+
+.gh-page-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-fg-default);
+  margin: 0;
+}
+
+.gh-section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-fg-default);
+  margin-bottom: 8px;
+}
+
+.gh-text-muted {
+  color: var(--color-fg-muted);
+}
+
+.gh-text-subtle {
+  color: var(--color-fg-subtle);
+}
+
+.gh-mono {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 13px;
+}
+
+/* ============================================
+   Dividers
+   ============================================ */
+
+.gh-divider {
+  height: 1px;
+  background: var(--color-border-default);
+  border: none;
+  margin: 16px 0;
+}
+
+/* ============================================
+   Loading / Spinner
+   ============================================ */
+
+.gh-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 16px;
+}
+
+.gh-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-border-default);
+  border-top-color: var(--color-accent-fg);
+  border-radius: 50%;
+  animation: gh-spin 0.8s linear infinite;
+}
+
+@keyframes gh-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   Hero Section (Home)
+   ============================================ */
+
+.gh-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: calc(100vh - 65px);
+  padding: 48px 24px;
+  background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(88, 166, 255, 0.1), transparent);
+}
+
+.gh-hero h1 {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--color-fg-default);
+  margin: 0 0 16px;
+  max-width: 700px;
+}
+
+.gh-hero h1 span {
+  background: linear-gradient(135deg, var(--color-accent-fg), var(--color-done-fg));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gh-hero p {
+  font-size: 20px;
+  color: var(--color-fg-muted);
+  max-width: 560px;
+  margin: 0 0 32px;
+  line-height: 1.6;
+}
+
+.gh-hero-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* ============================================
+   Feature Grid on Home
+   ============================================ */
+
+.gh-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin-top: 48px;
+  max-width: 800px;
+  width: 100%;
+}
+
+.gh-feature-card {
+  background: var(--color-canvas-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  text-align: left;
+  transition: border-color 0.2s ease;
+}
+
+.gh-feature-card:hover {
+  border-color: var(--color-fg-subtle);
+}
+
+.gh-feature-icon {
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.gh-feature-card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 4px;
+  color: var(--color-fg-default);
+}
+
+.gh-feature-card p {
+  font-size: 13px;
+  color: var(--color-fg-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ============================================
+   Contract List Items
+   ============================================ */
+
+.gh-contract-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  background: var(--color-canvas-subtle);
+  margin-bottom: 8px;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  text-decoration: none;
+  color: var(--color-fg-default);
+}
+
+.gh-contract-item:hover {
+  border-color: var(--color-fg-subtle);
+  background: var(--color-btn-hover-bg);
+  text-decoration: none;
+}
+
+.gh-contract-addr {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 14px;
+  color: var(--color-accent-fg);
+}
+
+.gh-contract-arrow {
+  color: var(--color-fg-subtle);
+  font-size: 18px;
+  transition: transform 0.15s ease;
+}
+
+.gh-contract-item:hover .gh-contract-arrow {
+  transform: translateX(4px);
+  color: var(--color-fg-muted);
+}
+
+/* ============================================
+   Contract Detail
+   ============================================ */
+
+.gh-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.gh-detail-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-fg-muted);
+  margin-bottom: 4px;
+}
+
+.gh-detail-value {
+  font-size: 16px;
+  color: var(--color-fg-default);
+  word-break: break-all;
+}
+
+.gh-detail-value.mono {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 13px;
+}
+
+/* ============================================
+   Status Indicators
+   ============================================ */
+
+.gh-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.gh-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.gh-status-dot.pending { background: var(--color-warning-fg); }
+.gh-status-dot.active { background: var(--color-success-fg); }
+.gh-status-dot.expired { background: var(--color-fg-subtle); }
+.gh-status-dot.rejected { background: var(--color-danger-fg); }
+
+/* ============================================
+   Empty State
+   ============================================ */
+
+.gh-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  text-align: center;
+}
+
+.gh-empty-state svg {
+  width: 48px;
+  height: 48px;
+  color: var(--color-fg-subtle);
+  margin-bottom: 16px;
+}
+
+.gh-empty-state h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+
+.gh-empty-state p {
+  color: var(--color-fg-muted);
+  font-size: 14px;
+  margin: 0 0 16px;
+}
+
+/* ============================================
+   Account Pill
+   ============================================ */
+
+.gh-account-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: var(--color-canvas-default);
+  border: 1px solid var(--color-border-default);
+  border-radius: 999px;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 12px;
+  color: var(--color-fg-muted);
+}
+
+.gh-account-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-success-fg);
+}
+
+/* ============================================
+   Date Picker Overrides
+   ============================================ */
+
+.react-date-picker__wrapper {
+  background: var(--color-canvas-default) !important;
+  border: 1px solid var(--color-border-default) !important;
+  border-radius: var(--radius-md) !important;
+  padding: 4px 8px !important;
+  color: var(--color-fg-default) !important;
+}
+
+.react-date-picker__inputGroup__input {
+  color: var(--color-fg-default) !important;
+}
+
+.react-date-picker__button svg {
+  stroke: var(--color-fg-muted) !important;
+}
+
+.react-calendar {
+  background: var(--color-canvas-subtle) !important;
+  border: 1px solid var(--color-border-default) !important;
+  border-radius: var(--radius-md) !important;
+  color: var(--color-fg-default) !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+.react-calendar__tile {
+  color: var(--color-fg-default) !important;
+}
+
+.react-calendar__tile:hover {
+  background: var(--color-btn-hover-bg) !important;
+}
+
+.react-calendar__tile--active {
+  background: var(--color-accent-emphasis) !important;
+  color: #ffffff !important;
+}
+
+.react-calendar__navigation button {
+  color: var(--color-fg-default) !important;
+}
+
+.react-calendar__month-view__weekdays {
+  color: var(--color-fg-muted) !important;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+
+@media (max-width: 768px) {
+  .gh-hero h1 {
+    font-size: 32px;
+  }
+  .gh-hero p {
+    font-size: 16px;
+  }
+  .gh-nav-links {
+    display: none;
+  }
+  .gh-detail-grid {
+    grid-template-columns: 1fr;
+  }
+  .gh-features {
+    grid-template-columns: 1fr;
+  }
 }
