@@ -1,10 +1,25 @@
 const DAI = artifacts.require("DAI");
 
-module.exports = async function(callback) {
-    let dai = await DAI.deployed();
-    await dai.mint("0x61d5eDd2eC22F190dC9c05a1F07185E9c1f95684", web3.utils.toWei("1000"));
-    await dai.mint("0x0181AAC1bF91f2C6d34B380638df0497F4c668fd", web3.utils.toWei("1000"));
-    await dai.mint("0x09E27534C4e5880cc46D597d44171DdA0c36C156", web3.utils.toWei("1000"));
-    await dai.mint("0xB6697fA1ae76aF6860071CC411a8E681743631CC", web3.utils.toWei("1000"));
+module.exports = async function (callback) {
+    try {
+        console.log("Connecting to DAI contract...");
+        let dai = await DAI.deployed();
+        console.log("Contract found at:", dai.address);
+
+        const amount = web3.utils.toWei("1000");
+
+        console.log("Minting 1000 DAI to account 1 (0x9F89...)...");
+        const tx1 = await dai.mint("0x9F89A08F3df0d60c96Bf082df5C39549FE2bBff0", amount);
+        console.log("Transaction 1 confirmed! Hash:", tx1.tx);
+
+        console.log("Minting 1000 DAI to account 2 (0x571f...)...");
+        const tx2 = await dai.mint("0x571ff2096d39F32406bf1Da0d78103C77d399585", amount);
+        console.log("Transaction 2 confirmed! Hash:", tx2.tx);
+
+        console.log("All minting completed successfully!");
+    } catch (error) {
+        console.error("Error during minting:", error);
+    }
+
     callback();
-}
+};
