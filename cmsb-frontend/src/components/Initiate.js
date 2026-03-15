@@ -52,11 +52,13 @@ export default function Initiate(props) {
 
   useEffect(() => {
     async function fetchData() {
-      const daiBalance = await props.getDAIBalance();
-      setDAIBalance(daiBalance.toString());
+      if (props.account) {
+        const balance = await props.getDAIBalance();
+        setDAIBalance(balance.toString());
+      }
     }
     fetchData();
-  }, []);
+  }, [props.account, props.getDAIBalance]);
 
   return (
     <div className="gh-container-sm" style={{ paddingTop: '32px', paddingBottom: '64px' }}>

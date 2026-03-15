@@ -3,21 +3,43 @@ import DAI from '../../abis/DAI.json';
 import ContractFactory from '../../abis/ContractFactory.json';
 import ContractController from '../../abis/ContractController.json';
 
-const daiContractAddress = "0xa41785a013642de3cdD513d499f756A877876c36";
-const factoryContractAddress = "0xA20CA4C4ab586dA7AcD75C3315105003723f9bB7";
+const daiContractAddress = "0xcfc0Fa4b955caac260975e3B4F6D7729c64c235f";
+const factoryContractAddress = "0xC35f2f32d341Df2deD161CB0dA14FdbBc10F5Ec2";
 
-let signer, provider, factoryContract, daiContract;
+// Supported RPCs
+const SEPOLIA_RPC = "https://ethereum-sepolia-rpc.publicnode.com";
+const LOCAL_RPC = "http://127.0.0.1:8545";
+
+let signer, provider, factoryContract, daiContract, readProvider;
+let isInitialized = false;
 
 export const loadProviderAndBlockchainData = async () => {
+    if (isInitialized && signer && provider) return;
     provider = new providers.Web3Provider(window.ethereum);
+    const network = await provider.getNetwork();
     signer = provider.getSigner();
+
+    // Use local RPC if on Ganache, otherwise use Sepolia public RPC
+    const rpcUrl = (network.chainId === 1337 || network.chainId === 5777) ? LOCAL_RPC : SEPOLIA_RPC;
+    readProvider = new providers.JsonRpcProvider(rpcUrl);
+
+    // Initialise contracts with the injected provider (MetaMask)
     daiContract = new Contract(daiContractAddress, DAI.abi, provider);
     factoryContract = new Contract(factoryContractAddress, ContractFactory.abi, provider);
+    isInitialized = true;
 };
 
 export const getDAIBalance = async () => {
     await loadProviderAndBlockchainData();
-    const balance = await daiContract.connect(signer).balanceOf(await signer.getAddress());
+    const address = await signer.getAddress();
+    const network = await provider.getNetwork();
+
+    // Dynamically get address from ABI for the current network
+    const networkAddress = DAI.networks[network.chainId]?.address || daiContractAddress;
+
+    // Use the independent read-only provider to avoid MetaMask RPC rate limits
+    const readDai = new Contract(networkAddress, DAI.abi, readProvider);
+    const balance = await readDai.balanceOf(address);
     return ethers.utils.formatEther(balance);
 };
 
