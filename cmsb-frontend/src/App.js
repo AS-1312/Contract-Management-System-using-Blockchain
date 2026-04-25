@@ -16,7 +16,8 @@ import {
   approveContract,
   rejectContract,
   validateContract,
-  renewContract
+  renewContract,
+  checkExpired
 } from './components/utils/methods';
 import useMetaMask from './hooks/metamask';
 
@@ -128,6 +129,7 @@ function App() {
                     rejectContract={rejectContract}
                     validateContract={validateContract}
                     renewContract={renewContract}
+                    checkExpired={checkExpired}
                   />
                 </Route>
               </Switch>

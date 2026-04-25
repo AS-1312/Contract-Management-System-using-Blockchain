@@ -16,5 +16,8 @@
     "@truffle/hdwallet-provider": "^2.0.4",
     "fs": "0.0.1-security",
     "truffle": "^5.11.5"
+  },
+  "devDependencies": {
+    "ganache": "^7.9.2"
   }
 }

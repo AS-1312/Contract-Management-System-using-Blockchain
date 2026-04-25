@@ -3,8 +3,8 @@ import DAI from '../../abis/DAI.json';
 import ContractFactory from '../../abis/ContractFactory.json';
 import ContractController from '../../abis/ContractController.json';
 
-const daiContractAddress = "0xcfc0Fa4b955caac260975e3B4F6D7729c64c235f";
-const factoryContractAddress = "0xC35f2f32d341Df2deD161CB0dA14FdbBc10F5Ec2";
+const daiContractAddress = "0xd4080a9Fc420d115130b6febd221310464d1b434";
+const factoryContractAddress = "0xc49A488da8Fa20dB3865dF21663982B94Ca5507b";
 
 // Supported RPCs
 const SEPOLIA_RPC = "https://ethereum-sepolia-rpc.publicnode.com";
@@ -167,6 +167,19 @@ export const renewContract = async (contractAddress, expiryTime) => {
             window.alert("Transaction failed");
             console.log(error)
         }
+        return false;
+    }
+};
+
+export const checkExpired = async (contractAddress) => {
+    await loadProviderAndBlockchainData();
+    const contractController = new Contract(contractAddress, ContractController.abi, provider);
+    try {
+        const tx = await contractController.connect(signer).checkExpired();
+        await tx.wait();
+        return true;
+    } catch (error) {
+        console.log("checkExpired error:", error);
         return false;
     }
 };
