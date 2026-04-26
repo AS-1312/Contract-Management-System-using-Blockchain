@@ -14,11 +14,18 @@ contract ContractController is IContractInit, ContractStages, Initializable {
     mapping(address => bool) hasPartyApproved;
     mapping(address => uint) fundDistribution;
 
+    // Renewal state
+    uint proposedExpiryTime;
+    mapping(address => bool) renewalApproved;
+
     event contractInitialized(address contractAddress);
     event partyApproved(address party, address contractAddress);
     event finalApprovalCompleted(address contractAddress);
     event paymentExecuted(address contractAddress);
     event contractRejectedByParty(address party, address contractAddress);
+    event renewalProposed(address initiator, address contractAddress, uint newExpiryTime);
+    event renewalApprovedByParty(address party, address contractAddress);
+    event contractRenewed(address contractAddress, uint newExpiryTime);
 
     modifier onlyInitiator() {
         require(msg.sender == contractData.initiatingParty, "Not initiating party");
@@ -66,6 +73,24 @@ contract ContractController is IContractInit, ContractStages, Initializable {
 
     function viewContractData() external view onlyParty returns (CompleteContractData memory) {
         return contractData;
+    }
+
+    function getProposedExpiryTime() external view onlyParty returns (uint) {
+        return proposedExpiryTime;
+    }
+
+    function hasCurrentPartyApprovedRenewal() external view onlyParty returns (bool) {
+        return renewalApproved[msg.sender];
+    }
+
+    function _haveAllPartiesApprovedRenewal() internal view returns (bool) {
+        // Check that the initiating party has approved
+        if (!renewalApproved[contractData.initiatingParty]) return false;
+        // Check each party
+        for (uint i = 0; i < contractData.parties.length; i++) {
+            if (!renewalApproved[contractData.parties[i]]) return false;
+        }
+        return true;
     }
 
     function makePayment() private {
@@ -122,10 +147,37 @@ contract ContractController is IContractInit, ContractStages, Initializable {
         emit finalApprovalCompleted(address(this));
     } 
 
-    function renewContract(uint extendedTime) external onlyInitiator {
+    /// @notice Initiating party proposes a renewal with a new expiry date.
+    ///         Moves the contract to RenewalPending and auto-approves for the initiator.
+    function proposeRenewal(uint _newExpiryTime) external onlyInitiator {
         _atStage(ContractManagementStages.Expired);
-        contractData.expiryTime = extendedTime;
-        _jumpToStage(ContractManagementStages.Validated);
+        proposedExpiryTime = _newExpiryTime;
+
+        // Reset all renewal approvals
+        renewalApproved[contractData.initiatingParty] = false;
+        for (uint i = 0; i < contractData.parties.length; i++) {
+            renewalApproved[contractData.parties[i]] = false;
+        }
+
+        // Auto-approve for the initiator (they are proposing it)
+        renewalApproved[msg.sender] = true;
+
+        _jumpToStage(ContractManagementStages.RenewalPending);
+        emit renewalProposed(msg.sender, address(this), _newExpiryTime);
+    }
+
+    /// @notice Any party can call this to approve a pending renewal.
+    ///         When all parties have approved, contract moves back to Validated (Active).
+    function approveRenewal() external onlyParty {
+        _atStage(ContractManagementStages.RenewalPending);
+        renewalApproved[msg.sender] = true;
+        emit renewalApprovedByParty(msg.sender, address(this));
+
+        if (_haveAllPartiesApprovedRenewal()) {
+            contractData.expiryTime = proposedExpiryTime;
+            _jumpToStage(ContractManagementStages.Validated);
+            emit contractRenewed(address(this), proposedExpiryTime);
+        }
     }
 
     function checkExpired() external {

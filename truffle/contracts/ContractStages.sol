@@ -4,11 +4,12 @@ pragma solidity ^0.8.2;
 contract ContractStages {
 
     enum ContractManagementStages {
-        PartyApprovalPending,
-        FinalApprovalPending,
-        Validated,
-        Expired,
-        Rejected
+        PartyApprovalPending,   // 0
+        FinalApprovalPending,   // 1
+        Validated,              // 2
+        Expired,                // 3
+        RenewalPending,         // 4
+        Rejected                // 5
     }
 
     ContractManagementStages internal currentStage = ContractManagementStages.PartyApprovalPending;
@@ -27,6 +28,6 @@ contract ContractStages {
     }
 
     function _goToRejected() internal {
-        currentStage = ContractManagementStages(4);
+        currentStage = ContractManagementStages.Rejected;
     }
 }

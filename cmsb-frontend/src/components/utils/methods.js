@@ -3,8 +3,8 @@ import DAI from '../../abis/DAI.json';
 import ContractFactory from '../../abis/ContractFactory.json';
 import ContractController from '../../abis/ContractController.json';
 
-const daiContractAddress = "0xd4080a9Fc420d115130b6febd221310464d1b434";
-const factoryContractAddress = "0xc49A488da8Fa20dB3865dF21663982B94Ca5507b";
+const daiContractAddress = "0xcA7d700F3aB993d689a41Cf0b7747B5D2aDF008f";
+const factoryContractAddress = "0xFE02C7703710D5720415efc8176c6CaC48113151";
 
 // Supported RPCs
 const SEPOLIA_RPC = "https://ethereum-sepolia-rpc.publicnode.com";
@@ -12,12 +12,21 @@ const LOCAL_RPC = "http://127.0.0.1:8545";
 
 let signer, provider, factoryContract, daiContract, readProvider;
 let isInitialized = false;
+let currentAccount = null;
 
 export const loadProviderAndBlockchainData = async () => {
-    if (isInitialized && signer && provider) return;
-    provider = new providers.Web3Provider(window.ethereum);
+    // Always create a fresh provider to read the current account
+    const freshProvider = new providers.Web3Provider(window.ethereum);
+    const freshSigner = freshProvider.getSigner();
+    const freshAccount = await freshSigner.getAddress();
+
+    // Re-initialise if not yet initialised OR if the MetaMask account changed
+    if (isInitialized && signer && provider && currentAccount === freshAccount.toLowerCase()) return;
+
+    provider = freshProvider;
     const network = await provider.getNetwork();
-    signer = provider.getSigner();
+    signer = freshSigner;
+    currentAccount = freshAccount.toLowerCase();
 
     // Use local RPC if on Ganache, otherwise use Sepolia public RPC
     const rpcUrl = (network.chainId === 1337 || network.chainId === 5777) ? LOCAL_RPC : SEPOLIA_RPC;
@@ -95,6 +104,15 @@ export const getContractDetails = async (contractAddress) => {
         'data': contractData,
         'currentApproved': currentPartyApproved
     };
+
+    // If in RenewalPending stage (4), fetch renewal-specific data
+    if (contractStage.toString() === '4') {
+        const proposedExpiry = await contractController.connect(signer).getProposedExpiryTime();
+        const renewalApproved = await contractController.connect(signer).hasCurrentPartyApprovedRenewal();
+        fullContractDetails.proposedExpiryTime = proposedExpiry.toString();
+        fullContractDetails.currentRenewalApproved = renewalApproved;
+    }
+
     return fullContractDetails;
 };
 
@@ -152,20 +170,39 @@ export const validateContract = async (contractAddress) => {
     }
 };
 
-export const renewContract = async (contractAddress, expiryTime) => {
+export const proposeRenewal = async (contractAddress, expiryTime) => {
     await loadProviderAndBlockchainData();
     const contractController = new Contract(contractAddress, ContractController.abi, provider);
     try {
-        const tx = await contractController.connect(signer).renewContract(expiryTime);
+        const tx = await contractController.connect(signer).proposeRenewal(expiryTime);
         await tx.wait();
-        window.alert("Transaction was successful, contract has been renewed");
+        window.alert("Renewal proposed successfully. Waiting for all parties to approve.");
         return true;
     } catch (error) {
         if (error.code === 4001) {
             window.alert("Transaction was rejected by the user");
         } else {
             window.alert("Transaction failed");
-            console.log(error)
+            console.log(error);
+        }
+        return false;
+    }
+};
+
+export const approveRenewal = async (contractAddress) => {
+    await loadProviderAndBlockchainData();
+    const contractController = new Contract(contractAddress, ContractController.abi, provider);
+    try {
+        const tx = await contractController.connect(signer).approveRenewal();
+        await tx.wait();
+        window.alert("Renewal approved successfully");
+        return true;
+    } catch (error) {
+        if (error.code === 4001) {
+            window.alert("Transaction was rejected by the user");
+        } else {
+            window.alert("Transaction failed");
+            console.log(error);
         }
         return false;
     }

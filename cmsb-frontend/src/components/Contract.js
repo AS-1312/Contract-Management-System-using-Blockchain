@@ -129,11 +129,26 @@ export default function Contract(props) {
         }
     };
 
-    const handleRenewContract = async () => {
+    const handleProposeRenewal = async () => {
         try {
             props.setLoading(true);
             const timestamp = Date.parse(newExpiryTime);
-            const result = await props.renewContract(match.params.id, timestamp);
+            const result = await props.proposeRenewal(match.params.id, timestamp);
+            if (result) {
+                const updatedDetails = await props.getContractDetails(match.params.id);
+                setContractDetails(updatedDetails);
+            }
+            props.setLoading(false);
+        } catch (error) {
+            console.log(error);
+            props.setLoading(false);
+        }
+    };
+
+    const handleApproveRenewal = async () => {
+        try {
+            props.setLoading(true);
+            const result = await props.approveRenewal(match.params.id);
             if (result) {
                 setRenewalSuccess(true);
                 const updatedDetails = await props.getContractDetails(match.params.id);
@@ -152,7 +167,8 @@ export default function Contract(props) {
             case '1': return { label: 'Pending Validation', dotClass: 'pending', badgeClass: 'gh-badge-yellow' };
             case '2': return { label: 'Active', dotClass: 'active', badgeClass: 'gh-badge-green' };
             case '3': return { label: 'Expired', dotClass: 'expired', badgeClass: 'gh-badge-red' };
-            case '4': return { label: 'Rejected', dotClass: 'rejected', badgeClass: 'gh-badge-red' };
+            case '4': return { label: 'Renewal Pending', dotClass: 'pending', badgeClass: 'gh-badge-yellow' };
+            case '5': return { label: 'Rejected', dotClass: 'rejected', badgeClass: 'gh-badge-red' };
             default: return { label: 'Unknown', dotClass: 'expired', badgeClass: 'gh-badge-yellow' };
         }
     };
@@ -354,7 +370,7 @@ export default function Contract(props) {
                         </div>
                     )}
 
-                    {/* Stage 3: Expired — Renewal UI */}
+                    {/* Stage 3: Expired — Propose Renewal */}
                     {contractDetails.stage === '3' && (
                         <div className="gh-card">
                             <div className="gh-alert gh-alert-warning" style={{ marginBottom: '16px' }}>
@@ -364,31 +380,22 @@ export default function Contract(props) {
                                 This contract has expired
                             </div>
 
-                            {renewalSuccess && (
-                                <div className="gh-alert gh-alert-success" style={{ marginBottom: '16px' }}>
-                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                                        <path fillRule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z" />
-                                    </svg>
-                                    Contract has been successfully renewed!
-                                </div>
-                            )}
-
                             {contractDetails.data.initiatingParty === props.account ? (
                                 <div className="gh-renewal-section">
                                     <h3 className="gh-section-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                         {refreshIcon}
-                                        Renew Contract
+                                        Propose Renewal
                                     </h3>
                                     <p className="gh-text-muted" style={{ fontSize: '13px', marginBottom: '12px' }}>
-                                        As the initiating party, you can renew this expired contract by selecting a new expiration date below.
+                                        As the initiating party, you can propose a renewal for this expired contract. All parties must approve the renewal before it takes effect.
                                     </p>
                                     <label className="gh-label">New Expiration Date</label>
                                     <div style={{ marginBottom: '12px' }}>
                                         <DatePicker minDate={new Date()} value={newExpiryTime} onChange={(value) => setNewExpiryTime(value)} required />
                                     </div>
-                                    <button className="gh-btn gh-btn-primary" onClick={handleRenewContract}>
+                                    <button className="gh-btn gh-btn-primary" onClick={handleProposeRenewal}>
                                         {refreshIcon}
-                                        Renew Contract
+                                        Propose Renewal
                                     </button>
                                 </div>
                             ) : (
@@ -396,14 +403,67 @@ export default function Contract(props) {
                                     <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                                         <path fillRule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z" />
                                     </svg>
-                                    Only the initiating party can renew this contract.
+                                    Waiting for the initiating party to propose a renewal.
                                 </div>
                             )}
                         </div>
                     )}
 
-                    {/* Stage 4: Rejected */}
+                    {/* Stage 4: RenewalPending — Parties approve the proposed renewal */}
                     {contractDetails.stage === '4' && (
+                        <div className="gh-card">
+                            <div className="gh-status" style={{ marginBottom: '12px' }}>
+                                <span className="gh-status-dot pending"></span>
+                                Renewal proposed — awaiting approval from all parties
+                            </div>
+
+                            <div className="gh-detail-grid" style={{ marginBottom: '16px' }}>
+                                <div>
+                                    <div className="gh-detail-label">Proposed New Expiration Date</div>
+                                    <div className="gh-detail-value">
+                                        {contractDetails.proposedExpiryTime
+                                            ? (new Date(parseInt(contractDetails.proposedExpiryTime))).toDateString()
+                                            : '—'}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr className="gh-divider" />
+
+                            {renewalSuccess && (
+                                <div className="gh-alert gh-alert-success" style={{ marginBottom: '16px' }}>
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                        <path fillRule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z" />
+                                    </svg>
+                                    Renewal has been approved and the contract is now active!
+                                </div>
+                            )}
+
+                            {contractDetails.currentRenewalApproved ? (
+                                <div className="gh-alert gh-alert-success">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                        <path fillRule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z" />
+                                    </svg>
+                                    You have approved this renewal. Waiting for other parties.
+                                </div>
+                            ) : (
+                                <div style={{ marginTop: '12px' }}>
+                                    <p className="gh-text-muted" style={{ fontSize: '13px', marginBottom: '12px' }}>
+                                        Review the proposed renewal date above and approve to renew the contract.
+                                    </p>
+                                    <button className="gh-btn gh-btn-primary" onClick={handleApproveRenewal}>
+                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                            <path fillRule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z" />
+                                        </svg>
+                                        Sign &amp; Approve Renewal
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Stage 5: Rejected */}
+                    {contractDetails.stage === '5' && (
                         <div className="gh-card">
                             <div className="gh-alert gh-alert-danger">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
